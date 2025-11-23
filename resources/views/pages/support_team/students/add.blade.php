@@ -53,14 +53,9 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="bg_id">Religion:</label>
-                            <select class="select form-control" id="bg_id" name="bg_id" data-fouc>
-                                <option value=""></option>
-                                @foreach(App\Models\BloodGroup::all() as $bg)
-                                    <option value="{{ $bg->id }}" {{ old('bg_id') == $bg->id ? 'selected' : '' }}>
-                                        {{ $bg->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+                             <input name="religion" type="text" class="form-control"
+                                   placeholder="type religion." value="{{ old('religion') }}">
+                           
                         </div>
                     </div>
 
@@ -114,7 +109,19 @@
 
                 {{-- Row: Photo --}}
                 <div class="row mt-3">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <label>PLE Results:</label>
+                         <input value="{{ old('upe_results') }}" required type="text"
+                                   name="upe_results" placeholder="UPE Results" class="form-control">
+                       
+                    </div>
+                    <div class="col-md-4">
+                        <label>UCE Results:</label>
+                         <input value="{{ old('uce_results') }}" required type="text"
+                                   name="uce_results" placeholder="UCE Results" class="form-control">
+                        
+                    </div>
+                    <div class="col-md-4">
                         <label>Upload Passport Photo:</label>
                         <input type="file" name="photo" accept="image/*"
                                class="form-input-styled" data-fouc>
@@ -135,8 +142,8 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label>Parents / Guardian Name:</label>
-                        <input type="text" name="phone2" class="form-control"
-                               value="{{ old('phone2') }}" placeholder="Guardian full name">
+                        <input type="text" name="guardian_name" class="form-control"
+                               value="{{ old('guardian_name') }}" placeholder="Guardian full name">
                     </div>
 
                     <div class="col-md-6">
@@ -259,8 +266,8 @@
                 <div class="row mt-3">
                     <div class="col-md-12">
                         <label>General Comment:</label>
-                        <textarea name="general_comment" class="form-control"
-                                  rows="3" placeholder="Any additional notes...">{{ old('general_comment') }}</textarea>
+                        <textarea name="general_comments" class="form-control"
+                                  rows="3" placeholder="Any additional notes...">{{ old('general_comments') }}</textarea>
                     </div>
                 </div>
 
