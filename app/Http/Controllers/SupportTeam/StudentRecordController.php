@@ -51,6 +51,7 @@ class StudentRecordController extends Controller
 
     public function store(StudentRecordCreate $req)
     {
+        dd($req->all());
        $data =  $req->only(Qs::getUserRecord());
        $sr =  $req->only(Qs::getStudentData());
 
@@ -74,10 +75,10 @@ class StudentRecordController extends Controller
             $data['photo'] = asset('storage/' . $f['path']);
         }
 
-        $user = $this->user->create($data); // Create User
+       // $user = $this->user->create($data); // Create User
 
         $sr['adm_no'] = $data['username'];
-        $sr['user_id'] = $user->id;
+        $sr['user_id'] = 0;
         $sr['session'] = Qs::getSetting('current_session');
 
         $this->student->createRecord($sr); // Create Student

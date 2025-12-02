@@ -15,7 +15,16 @@
                     <div class="card mb-0">
                         <div class="card-body">
                             <div class="text-center mb-3">
-                                <i class="icon-people icon-2x text-warning-400 border-warning-400 border-3 rounded-round p-3 mb-3 mt-1"></i>
+                               <img src="/global_assets/images/mubende_parents.jpg"
+                                style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%;"
+                                class="border-warning-400 border-1 p-1 mb-3 mt-1"
+                                alt="Parents">
+
+                                
+
+
+
+                              
                                 <h5 class="mb-0">Login to your account</h5>
                                 <span class="d-block text-muted">Your credentials</span>
                             </div>
