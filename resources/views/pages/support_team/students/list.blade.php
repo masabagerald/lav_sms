@@ -39,11 +39,19 @@
                         @foreach($students as $s)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td><img class="rounded-circle" style="height: 40px; width: 40px;" src="{{ $s->user->photo }}" alt="photo"></td>
-                                <td>{{ $s->user->name }}</td>
+                              <td>
+                                <img 
+                                    class="rounded-circle" 
+                                    style="height: 40px; width: 40px;"
+                                    src="{{ optional($s->user)->photo ? optional($s->user)->photo : asset('images/default-user.png') }}" 
+                                    alt="photo"
+                                >
+                             </td>
+
+                                <td>{{ $s->user->name ?? ''}}</td>
                                 <td>{{ $s->adm_no }}</td>
                                 <td>{{ $my_class->name.' '.$s->section->name }}</td>
-                                <td>{{ $s->user->email }}</td>
+                                <td>{{ $s->user->email ?? '' }}</td>
                                 <td class="text-center">
                                     <div class="list-icons">
                                         <div class="dropdown">
@@ -91,9 +99,9 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td><img class="rounded-circle" style="height: 40px; width: 40px;" src="{{ $sr->user->photo }}" alt="photo"></td>
-                                    <td>{{ $sr->user->name }}</td>
+                                    <td>{{ $sr->user->name ?? ''}}</td>
                                     <td>{{ $sr->adm_no }}</td>
-                                    <td>{{ $sr->user->email }}</td>
+                                    <td>{{ $sr->user->email ?? '' }}</td>
                                     <td class="text-center">
                                         <div class="list-icons">
                                             <div class="dropdown">

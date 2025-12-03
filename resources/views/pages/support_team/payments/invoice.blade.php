@@ -39,13 +39,13 @@
                             <td>{{ $uc->payment->ref_no }}</td>
 
                             {{--Amount--}}
-                            <td class="font-weight-bold" id="amt-{{ Qs::hash($uc->id) }}" data-amount="{{ $uc->payment->amount }}">{{ $uc->payment->amount }}</td>
+                            <td class="font-weight-bold" id="amt-{{ Qs::hash($uc->id) }}" data-amount="{{ $sr->user->fees}}">{{ $sr->user->fees}}</td>
 
                             {{--Amount Paid--}}
                             <td id="amt_paid-{{ Qs::hash($uc->id) }}" data-amount="{{ $uc->amt_paid ?: 0 }}" class="text-blue font-weight-bold">{{ $uc->amt_paid ?: '0.00' }}</td>
 
                             {{--Balance--}}
-                            <td id="bal-{{ Qs::hash($uc->id) }}" class="text-danger font-weight-bold">{{ $uc->balance ?: $uc->payment->amount }}</td>
+                            <td id="bal-{{ Qs::hash($uc->id) }}" class="text-danger font-weight-bold">{{ $uc->balance ?: $sr->user->fees }}</td>
 
                             {{--Pay Now Form--}}
                             <td>
