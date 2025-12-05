@@ -75,10 +75,10 @@ class StudentRecordController extends Controller
             $data['photo'] = asset('storage/' . $f['path']);
         }
 
-       // $user = $this->user->create($data); // Create User
+        $user = $this->user->create($data); // Create User
 
         $sr['adm_no'] = $data['username'];
-        $sr['user_id'] = 0;
+        $sr['user_id'] = $user->id;
         $sr['session'] = Qs::getSetting('current_session');
 
         $this->student->createRecord($sr); // Create Student

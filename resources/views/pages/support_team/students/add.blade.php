@@ -111,13 +111,13 @@
                 <div class="row mt-3">
                     <div class="col-md-4">
                         <label>PLE Results:</label>
-                         <input value="{{ old('upe_results') }}" required type="text"
+                         <input value="{{ old('upe_results') }}"  type="text"
                                    name="upe_results" placeholder="UPE Results" class="form-control">
                        
                     </div>
                     <div class="col-md-4">
                         <label>UCE Results:</label>
-                         <input value="{{ old('uce_results') }}" required type="text"
+                         <input value="{{ old('uce_results') }}"  type="text"
                                    name="uce_results" placeholder="UCE Results" class="form-control">
                         
                     </div>
