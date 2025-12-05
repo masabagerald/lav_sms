@@ -73,6 +73,7 @@ class PaymentController extends Controller
         $inv = $year ? $this->pay->getAllMyPR($st_id, $year) : $this->pay->getAllMyPR($st_id);
 
         $d['sr'] = $this->student->findByUserId($st_id)->first();
+       
         $pr = $inv->get();
         $d['uncleared'] = $pr->where('paid', 0);
         $d['cleared'] = $pr->where('paid', 1);
