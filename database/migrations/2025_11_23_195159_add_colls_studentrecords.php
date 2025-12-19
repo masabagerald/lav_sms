@@ -17,7 +17,8 @@ class AddCollsStudentrecords extends Migration
             $table->integer('upe_results')->nullable();
             $table->integer('uce_results')->nullable();
             $table->string('religion')->nullable();
-            $table->string('guardian_name')->nullable();          
+            $table->string('guardian_name')->nullable();   
+            $table->string('sub_county')->nullable();          
             $table->decimal('fees', 10, 2); // t
             $table->text('general_comments')->nullable();            
   
