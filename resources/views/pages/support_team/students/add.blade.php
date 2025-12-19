@@ -100,7 +100,7 @@
 
                     <div class="col-md-4">
                         <label for="lga_id">Subcounty: <span class="text-danger">*</span></label>
-                        <input name="sub_county" type="text" class="form-control date-pick"
+                        <input name="sub_county" type="text" class="form-control"
                                    placeholder="subcounty" value="{{ old('sub_county') }}">
                     </div>
                 </div>
