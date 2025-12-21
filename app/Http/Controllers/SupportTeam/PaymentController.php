@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PaymentCreate;
 use App\Http\Requests\Payment\PaymentUpdate;
 use App\Models\Setting;
+use App\Models\StudentRecord;
 use App\Repositories\MyClassRepo;
 use App\Repositories\PaymentRepo;
 use App\Repositories\StudentRepo;
@@ -139,10 +140,12 @@ class PaymentController extends Controller
 
         $pr = $this->pay->findRecord($pr_id);
         $payment = $this->pay->find($pr->payment_id);
+        $student = StudentRecord::findOrFail($req->student_id);
+
         $d['amt_paid'] = $amt_p = $pr->amt_paid + $req->amt_paid;
-        $d['balance'] = $bal = $payment->amount - $amt_p;
+        $d['balance'] = $bal = $student->fees - $amt_p;
         $d['paid'] = $bal < 1 ? 1 : 0;
-        $d['teram'] = $req->term;
+        $d['term'] = $req->term;
 
         $this->pay->updateRecord($pr_id, $d);
 

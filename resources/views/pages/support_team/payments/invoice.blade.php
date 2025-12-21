@@ -57,9 +57,9 @@
                                     <td style="min-width: 160px;">
                                         <select name="term" class="form-control w-100">
                                             <option value="">Select Term</option>
-                                            <option value="Term 1">Term 1</option>
-                                            <option value="Term 2">Term 2</option>
-                                            <option value="Term 3">Term 3</option>
+                                            <option value="1">Term 1</option>
+                                            <option value="2">Term 2</option>
+                                            <option value="3">Term 3</option>
                                         </select>
                                     </td>
 
@@ -76,6 +76,8 @@
                                     required
                                     placeholder="Enter amount"
                                     title="Pay Now">
+
+                                <input type="hidden" name="student_id" value="{{$sr->id }}" />
 
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-danger">
@@ -144,7 +146,7 @@
                             <td>{{ $cl->payment->ref_no }}</td>
 
                             {{--Amount--}}
-                            <td class="font-weight-bold">{{ $cl->payment->amount }}</td>
+                            <td class="font-weight-bold">{{ $sr->fees }}</td>
                             {{--Receipt No--}}
                             <td>{{ $cl->ref_no }}</td>
                              <td>{{ $cl->term}}</td>

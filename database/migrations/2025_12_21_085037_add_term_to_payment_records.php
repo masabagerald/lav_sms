@@ -15,7 +15,7 @@ class AddTermToPaymentRecords extends Migration
     {
         Schema::table('payment_records', function (Blueprint $table) {
             //
-             $table->tinyInteger('term');
+             $table->tinyInteger('term')->nullable();
         });
     }
 
