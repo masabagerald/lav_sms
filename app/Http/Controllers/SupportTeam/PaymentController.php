@@ -142,6 +142,7 @@ class PaymentController extends Controller
         $d['amt_paid'] = $amt_p = $pr->amt_paid + $req->amt_paid;
         $d['balance'] = $bal = $payment->amount - $amt_p;
         $d['paid'] = $bal < 1 ? 1 : 0;
+        $d['teram'] = $req->term;
 
         $this->pay->updateRecord($pr_id, $d);
 
