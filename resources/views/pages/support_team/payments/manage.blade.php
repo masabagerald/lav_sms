@@ -45,9 +45,9 @@
                     <thead>
                     <tr>
                         <th>S/N</th>
-                        <th>Photo</th>
                         <th>Name</th>
                         <th>ADM_No</th>
+                        <th>School Fees</th>
                         <th>Payments</th>
                     </tr>
                     </thead>
@@ -55,9 +55,9 @@
                     @foreach($students as $s)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td><img class="rounded-circle" style="height: 40px; width: 40px;" src="{{ $s->user->photo }}" alt="photo"></td>
                             <td>{{ $s->user->name }}</td>
                             <td>{{ $s->adm_no }}</td>
+                             <td>{{ $s->fees }}</td>
                             <td>
                                 <div class="dropdown">
                                     <a href="#" class=" btn btn-danger" data-toggle="dropdown"> Manage Payments <i class="icon-arrow-down5"></i>
