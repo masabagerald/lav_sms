@@ -10,37 +10,61 @@
         </div>
     </div>
 
+    {{-- Summary Cards --}}
+    @php
+        $totalPaid = $payments->sum('amt_paid');
+        $totalBalance = $payments->sum('balance');
+    @endphp
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-success shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Amount Paid</h6>
+                    <h4 class="fw-bold text-success">{{ number_format($totalPaid, 2) }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Balance</h6>
+                    <h4 class="fw-bold text-danger">{{ number_format($totalBalance, 2) }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-primary shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Total Records</h6>
+                    <h4 class="fw-bold">{{ $payments->count() }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Filters --}}
     <div class="card shadow-sm mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('reports.index') }}" class="row g-3">
-
                 {{-- Year --}}
                 <div class="col-md-2">
                     <label class="form-label">Year</label>
                     <select name="year" class="form-select">
                         @for ($y = now()->year; $y >= now()->year - 6; $y--)
-                            <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>
-                                {{ $y }}
-                            </option>
+                            <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
                         @endfor
                     </select>
                 </div>
-
                 {{-- Class --}}
                 <div class="col-md-3">
                     <label class="form-label">Class</label>
                     <select name="my_class_id" class="form-select">
                         <option value="">All Classes</option>
                         @foreach ($classes as $class)
-                            <option value="{{ $class->id }}"
-                                {{ $classId == $class->id ? 'selected' : '' }}>
-                                {{ $class->name }}
-                            </option>
+                            <option value="{{ $class->id }}" {{ $classId == $class->id ? 'selected' : '' }}>{{ $class->name }}</option>
                         @endforeach
                     </select>
                 </div>
-
                 {{-- Term --}}
                 <div class="col-md-2">
                     <label class="form-label">Term</label>
@@ -51,7 +75,6 @@
                         <option value="Term 3" {{ $term == 'Term 3' ? 'selected' : '' }}>Term 3</option>
                     </select>
                 </div>
-
                 {{-- Status --}}
                 <div class="col-md-2">
                     <label class="form-label">Status</label>
@@ -61,14 +84,10 @@
                         <option value="0" {{ $paid === '0' ? 'selected' : '' }}>Pending</option>
                     </select>
                 </div>
-
                 {{-- Button --}}
                 <div class="col-md-2 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">
-                        Apply Filters
-                    </button>
+                    <button class="btn btn-primary w-100">Apply Filters</button>
                 </div>
-
             </form>
         </div>
     </div>
@@ -78,31 +97,31 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table id="paymentTable" class="table table-bordered table-striped table-hover">
-                    <thead class="table-dark">
+                    <thead class="table-dark text-center">
                         <tr>
                             <th>#</th>
                             <th>Student</th>
-                            <th>Class/Section</th>
-                             <th>Admission number</th>
+                            <th>Class / Section</th>
+                            <th>Adm No</th>
                             <th>Ref No</th>
-                            <th>Amount Paid</th>
-                            <th>Balance</th>
+                            <th class="text-end">Amount Paid</th>
+                            <th class="text-end">Balance</th>
                             <th>Status</th>
                             <th>Year</th>
                             <th>Term</th>
-                            <th>Last payment Date</th>
+                            <th>Last Payment</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($payments as $record)
-                            <tr>
+                            <tr class="{{ !$record->paid ? 'table-warning' : '' }}">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $record->student->name?? 'N/A' }}</td>
+                                <td>{{ $record->student->name ?? 'N/A' }}</td>
                                 <td>{{ $record->student->Student_record->class_section }}</td>
                                 <td>{{ $record->student->Student_record->adm_no }}</td>
                                 <td>{{ $record->ref_no }}</td>
-                                <td>{{ number_format($record->amt_paid, 2) }}</td>
-                                <td>{{ number_format($record->balance, 2) }}</td>
+                                <td class="text-end fw-semibold text-success">{{ number_format($record->amt_paid, 2) }}</td>
+                                <td class="text-end fw-semibold text-danger">{{ number_format($record->balance, 2) }}</td>
                                 <td>
                                     @if($record->paid)
                                         <span class="badge bg-success">Paid</span>
@@ -116,27 +135,43 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="10" class="text-center text-muted">
-                                    No payment records found
-                                </td>
+                                <td colspan="11" class="text-center text-muted">No payment records found</td>
                             </tr>
                         @endforelse
                     </tbody>
+
+                    {{-- Totals in tfoot --}}
+                    @if($payments->count())
+                    <tfoot class="table-secondary fw-bold">
+                        <tr>
+                            <td colspan="5" class="text-end">TOTAL</td>
+                            <td class="text-end text-success">{{ number_format($totalPaid, 2) }}</td>
+                            <td class="text-end text-danger">{{ number_format($totalBalance, 2) }}</td>
+                            <td colspan="4"></td>
+                        </tr>
+                    </tfoot>
+                    @endif
+
                 </table>
             </div>
         </div>
     </div>
 
 </div>
+
+{{-- DataTables --}}
+
 <script>
     $(document).ready(function () {
         $('#paymentTable').DataTable({
             pageLength: 10,
             ordering: true,
             searching: true,
-            responsive: true
+            responsive: true,
+            order: [[0, 'desc']]
         });
     });
 </script>
-@endsection
 
+
+@endsection
