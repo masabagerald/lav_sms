@@ -37,6 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('promotion/{fc?}/{fs?}/{tc?}/{ts?}', 'PromotionController@promotion')->name('students.promotion');
             Route::post('promote/{fc}/{fs}/{tc}/{ts}', 'PromotionController@promote')->name('students.promote');
 
+           
+
         });
 
         /*************** Users *****************/
@@ -144,6 +146,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('exams', 'ExamController');
         Route::resource('dorms', 'DormController');
         Route::resource('payments', 'PaymentController');
+
+        Route::resource('reports', 'ReportController');
+
+        Route::get('/reports/payments', [ReportController::class, 'index'])
+    ->name('reports.payments');
+
+
+        // app\Http\Controllers\SupportTeam\ReportController.php
 
     });
 

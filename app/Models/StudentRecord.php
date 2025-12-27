@@ -38,4 +38,17 @@ class StudentRecord extends Eloquent
     {
         return $this->belongsTo(Dorm::class);
     }
+
+    public function getClassSectionAttribute()
+{
+    $class = $this->my_class->name ?? '';
+    $section = $this->section->name ?? '';
+
+    if ($class && $section) {
+        return $class . ' ' . $section;
+    }
+
+    return $class ?: $section;
+}
+
 }

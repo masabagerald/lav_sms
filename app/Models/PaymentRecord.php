@@ -23,4 +23,5 @@ class PaymentRecord extends Eloquent
     {
         return $this->hasMany(Receipt::class, 'pr_id');
     }
+
 }
