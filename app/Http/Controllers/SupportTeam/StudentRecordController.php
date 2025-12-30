@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SupportTeam;
 
+use App\Helpers\AdminNoHelper;
 use App\Helpers\Qs;
 use App\Helpers\Mk;
 use App\Http\Requests\Student\StudentRecordCreate;
@@ -65,7 +66,16 @@ class StudentRecordController extends Controller
         $data['password'] = Hash::make('student');
         $data['photo'] = Qs::getDefaultUserImage();
         $adm_no = $req->adm_no;
-        $data['username'] = strtoupper(Qs::getAppCode().'/'.$ct.'/'.$sr['year_admitted'].'/'.($adm_no ?: mt_rand(1000, 99999)));
+
+        $year = $sr['year_admitted'];
+
+   
+
+        $data['username'] = AdminNoHelper::generateAdmissionNo($ct, $sr['year_admitted']);
+
+        
+
+     
 
         if($req->hasFile('photo')) {
             $photo = $req->file('photo');

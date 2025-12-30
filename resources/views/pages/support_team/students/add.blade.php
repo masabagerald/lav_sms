@@ -217,11 +217,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-6">
-                        <label>Admission Number:</label>
-                        <input type="text" name="adm_no" class="form-control"
-                               value="{{ old('adm_no') }}" placeholder="Admission Number">
-                    </div>
+                   
                 </div>
 
                 {{-- Row: Dormitory + Room Number + Sport House --}}
