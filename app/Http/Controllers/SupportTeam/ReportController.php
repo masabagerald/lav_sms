@@ -19,7 +19,7 @@ public function index(Request $request)
 
         $year     = $request->get('year', $currentYear);
         $classId  = $request->get('my_class_id');
-        $term     = $request->get('term');
+     //   $term     = $request->get('term');
         $paid     = $request->get('paid');
 
         $payments = PaymentRecord::with([
@@ -33,9 +33,9 @@ public function index(Request $request)
                     $q->where('my_class_id', $classId);
                 });
             })
-            ->when($term, function ($q) use ($term) {
+          /*   ->when($term, function ($q) use ($term) {
                 $q->where('term', $term);
-            })
+            }) */
             ->when($paid !== null, function ($q) use ($paid) {
                 $q->where('paid', $paid);
             })
