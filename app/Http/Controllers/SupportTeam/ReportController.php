@@ -29,7 +29,7 @@ public function index(Request $request)
             ])
             ->where('year', $year)
             ->when($classId, function ($q) use ($classId) {
-                $q->whereHas('student', function ($q) use ($classId) {
+                $q->whereHas('student.student_record', function ($q) use ($classId) {
                     $q->where('my_class_id', $classId);
                 });
             })
