@@ -67,12 +67,12 @@
                 </div>
                 {{-- Term --}}
                 <div class="col-md-2">
-                    <label class="form-label">Term</label>
-                    <select name="term" class="form-select">
-                        <option value="">All Terms</option>
-                        <option value="Term 1" {{ $term == 'Term 1' ? 'selected' : '' }}>Term 1</option>
-                        <option value="Term 2" {{ $term == 'Term 2' ? 'selected' : '' }}>Term 2</option>
-                        <option value="Term 3" {{ $term == 'Term 3' ? 'selected' : '' }}>Term 3</option>
+                    <label class="form-label">Payment Types</label>
+                    <select name="payment_id" class="form-select">
+                        <option value="">All</option>
+                        @foreach ($payment_types  as $payment)
+                            <option value="{{ $payment->id }}" {{ $payment_id == $payment->id ? 'selected' : '' }}>{{ $payment->title }}</option>
+                        @endforeach
                     </select>
                 </div>
                 {{-- Status --}}
@@ -103,12 +103,13 @@
                             <th>Student</th>
                             <th>Class / Section</th>
                             <th>Adm No</th>
+                             <th>Payment Type</th>
                             <th>Ref No</th>
                             <th class="text-end">Amount Paid</th>
                             <th class="text-end">Balance</th>
                             <th>Status</th>
                             <th>Year</th>
-                            <th>Term</th>
+                           
                             <th>Last Payment</th>
                         </tr>
                     </thead>
@@ -119,6 +120,7 @@
                                 <td>{{ $record->student->name ?? 'N/A' }}</td>
                                 <td>{{ $record->student->Student_record->class_section }}</td>
                                 <td>{{ $record->student->Student_record->adm_no }}</td>
+                                  <td>{{ $record->payment->title ?? ''}}</td>
                                 <td>{{ $record->ref_no }}</td>
                                 <td class="text-end fw-semibold text-success">{{ number_format($record->amt_paid, 2) }}</td>
                                 <td class="text-end fw-semibold text-danger">{{ number_format($record->balance, 2) }}</td>
@@ -130,7 +132,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $record->year }}</td>
-                                <td>{{ $record->term }}</td>
+                              
                                 <td>{{ $record->updated_at->format('Y-m-d') }}</td>
                             </tr>
                         @empty

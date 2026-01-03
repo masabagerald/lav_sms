@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SupportTeam;
 
 use App\Http\Controllers\Controller;
 use App\Models\MyClass;
+use App\Models\Payment;
 use App\Models\PaymentRecord;
 use App\Models\StudentRecord;
 use Carbon\Carbon;
@@ -17,15 +18,18 @@ public function index(Request $request)
     {
         $currentYear = Carbon::now()->year;
 
+   
+
         $year     = $request->get('year', $currentYear);
         $classId  = $request->get('my_class_id');
-     //   $term     = $request->get('term');
+        $payment_id   = $request->get('payment_id');
         $paid     = $request->get('paid');
 
         $payments = PaymentRecord::with([
                 'student.student_record.user',
                 'student.student_record.my_class',
-                'student.student_record.section'
+                'student.student_record.section',
+                'payment'
             ])
             ->where('year', $year)
             ->when($classId, function ($q) use ($classId) {
@@ -33,9 +37,12 @@ public function index(Request $request)
                     $q->where('my_class_id', $classId);
                 });
             })
-          /*   ->when($term, function ($q) use ($term) {
-                $q->where('term', $term);
-            }) */
+             ->when($payment_id , function ($q) use ($payment_id ) {
+               $q->where('payment_id', $payment_id);
+
+             
+            })
+            
             ->when($paid !== null, function ($q) use ($paid) {
                 $q->where('paid', $paid);
             })
@@ -43,6 +50,7 @@ public function index(Request $request)
             ->get();
 
         $classes = MyClass::orderBy('name')->get();
+        $payment_types = Payment::all();
 
       
         return view('pages.reports.payments.index', compact(
@@ -50,8 +58,10 @@ public function index(Request $request)
             'classes',
             'year',
             'classId',
-            'term',
-            'paid'
+            'payment_id',
+       
+            'paid',
+            'payment_types'
         ));
     }
 
