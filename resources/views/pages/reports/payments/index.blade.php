@@ -164,16 +164,36 @@
 {{-- DataTables --}}
 
 <script>
-    $(document).ready(function () {
-        $('#paymentTable').DataTable({
-            pageLength: 10,
-            ordering: true,
-            searching: true,
-            responsive: true,
-            order: [[0, 'desc']]
-        });
+$(document).ready(function () {
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    $('#paymentTable').DataTable({
+        pageLength: 10,
+        ordering: true,
+        searching: true,
+        responsive: true,
+        order: [[0, 'desc']],
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excel',
+                filename: 'payment_report_' + today
+            },
+            {
+                extend: 'csv',
+                filename: 'payment_report_' + today
+            },
+            {
+                extend: 'pdf',
+                filename: 'payment_report_' + today
+            }
+        ]
     });
+});
 </script>
+
 
 
 @endsection
