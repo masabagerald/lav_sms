@@ -1,27 +1,55 @@
 @extends('layouts.master')
+
 @section('page_title', 'Student Profile - '.$sr->user->name)
+
 @section('content')
 <div class="row">
+
+    {{-- ================= LEFT PROFILE ================= --}}
     <div class="col-md-3 text-center">
         <div class="card">
             <div class="card-body">
-                <img style="width: 90%; height:90%" src="{{ $sr->user->photo }}" alt="photo" class="rounded-circle">
-                <br>
-                <h3 class="mt-3">{{ $sr->user->name }}</h3>
+                <img
+                    src="{{ $sr->user->photo }}"
+                    class="rounded-circle"
+                    alt="photo"
+                    style="width:90%; height:90%; object-fit:cover;"
+                >
+                <h4 class="mt-3">{{ $sr->user->name }}</h4>
+                <p class="text-muted">{{ $sr->class_section }}</p>
             </div>
         </div>
     </div>
+
+    {{-- ================= RIGHT CONTENT ================= --}}
     <div class="col-md-9">
         <div class="card">
             <div class="card-body">
+
+                {{-- ================= TABS ================= --}}
                 <ul class="nav nav-tabs nav-tabs-highlight">
                     <li class="nav-item">
-                        <a href="#" class="nav-link active">{{ $sr->user->name }}</a>
+                        <a class="nav-link active" data-toggle="tab" href="#basic-info">
+                            Basic Info
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#additional-info">
+                            Additional Info
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#academic-info">
+                            Academic / Status
+                        </a>
                     </li>
                 </ul>
 
-                <div class="tab-content">
-                    {{--Basic Info--}}
+                <div class="tab-content mt-3">
+
+                    {{-- ================= BASIC INFO ================= --}}
                     <div class="tab-pane fade show active" id="basic-info">
                         <table class="table table-bordered">
                             <tbody>
@@ -29,81 +57,136 @@
                                 <td class="font-weight-bold">Name</td>
                                 <td>{{ $sr->user->name }}</td>
                             </tr>
+
                             <tr>
-                                <td class="font-weight-bold">ADM_NO</td>
+                                <td class="font-weight-bold">Admission No</td>
                                 <td>{{ $sr->adm_no }}</td>
                             </tr>
+
                             <tr>
                                 <td class="font-weight-bold">Class</td>
-                                <td>{{ $sr->my_class->name.' '.$sr->section->name }}</td>
+                                <td>{{ $sr->class_section }}</td>
                             </tr>
-                            @if($sr->my_parent_id)
-                                <tr>
-                                    <td class="font-weight-bold">Parent</td>
-                                    <td>
-                                        <span><a target="_blank" href="{{ route('users.show', Qs::hash($sr->my_parent_id)) }}">{{ $sr->my_parent->name }}</a></span>
-                                    </td>
-                                </tr>
-                            @endif
+
+                            <tr>
+                                <td class="font-weight-bold">Session</td>
+                                <td>{{ $sr->session }}</td>
+                            </tr>
+
                             <tr>
                                 <td class="font-weight-bold">Year Admitted</td>
                                 <td>{{ $sr->year_admitted }}</td>
                             </tr>
+
+                            @if($sr->my_parent_id)
                             <tr>
-                                <td class="font-weight-bold">Gender</td>
-                                <td>{{ $sr->user->gender }}</td>
+                                <td class="font-weight-bold">Parent</td>
+                                <td>{{ $sr->my_parent->name }}</td>
                             </tr>
-                            <tr>
-                                <td class="font-weight-bold">Address</td>
-                                <td>{{ $sr->user->address }}</td>
-                            </tr>
-                            @if($sr->user->email)
-                            <tr>
-                                <td class="font-weight-bold">Email</td>
-                                <td>{{$sr->user->email }}</td>
-                            </tr>
-                            @endif
-                            @if($sr->user->phone)
-                                <tr>
-                                    <td class="font-weight-bold">Phone</td>
-                                    <td>{{$sr->user->phone.' '.$sr->user->phone2 }}</td>
-                                </tr>
-                            @endif
-                            <tr>
-                                <td class="font-weight-bold">Birthday</td>
-                                <td>{{$sr->user->dob }}</td>
-                            </tr>
-                            @if($sr->user->bg_id)
-                            <tr>
-                                <td class="font-weight-bold">Blood Group</td>
-                                <td>{{$sr->user->blood_group->name }}</td>
-                            </tr>
-                            @endif
-                            @if($sr->user->nal_id)
-                            <tr>
-                                <td class="font-weight-bold">Nationality</td>
-                                <td>{{$sr->user->nationality->name }}</td>
-                            </tr>
-                            @endif
-                            @if($sr->user->state_id)
-                            <tr>
-                                <td class="font-weight-bold">State</td>
-                                <td>{{$sr->user->state->name }}</td>
-                            </tr>
-                            @endif
-                            @if($sr->user->lga_id)
-                            <tr>
-                                <td class="font-weight-bold">LGA</td>
-                                <td>{{$sr->user->lga->name }}</td>
-                            </tr>
-                            @endif
-                            @if($sr->dorm_id)
-                                <tr>
-                                    <td class="font-weight-bold">Dormitory</td>
-                                    <td>{{$sr->dorm->name.' '.$sr->dorm_room_no }}</td>
-                                </tr>
                             @endif
 
+                            @if($sr->dorm_id)
+                            <tr>
+                                <td class="font-weight-bold">Dormitory</td>
+                                <td>{{ $sr->dorm->name }} {{ $sr->dorm_room_no }}</td>
+                            </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- ================= ADDITIONAL INFO ================= --}}
+                    <div class="tab-pane fade" id="additional-info">
+                        <table class="table table-bordered">
+                            <tbody>
+                            @if($sr->age)
+                            <tr>
+                                <td class="font-weight-bold">Age</td>
+                                <td>{{ $sr->age }}</td>
+                            </tr>
+                            @endif
+
+                            @if($sr->religion)
+                            <tr>
+                                <td class="font-weight-bold">Religion</td>
+                                <td>{{ $sr->religion }}</td>
+                            </tr>
+                            @endif
+
+                            @if($sr->guardian_name)
+                            <tr>
+                                <td class="font-weight-bold">Guardian Name</td>
+                                <td>{{ $sr->guardian_name }}</td>
+                            </tr>
+                            @endif
+
+                            @if($sr->sub_county)
+                            <tr>
+                                <td class="font-weight-bold">Sub County</td>
+                                <td>{{ $sr->sub_county }}</td>
+                            </tr>
+                            @endif
+
+                            @if($sr->house)
+                            <tr>
+                                <td class="font-weight-bold">House</td>
+                                <td>{{ $sr->house }}</td>
+                            </tr>
+                            @endif
+
+                            @if($sr->general_comments)
+                            <tr>
+                                <td class="font-weight-bold">General Comments</td>
+                                <td>{{ $sr->general_comments }}</td>
+                            </tr>
+                            @endif
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- ================= ACADEMIC / STATUS ================= --}}
+                    <div class="tab-pane fade" id="academic-info">
+                        <table class="table table-bordered">
+                            <tbody>
+                            @if($sr->upe_results)
+                            <tr>
+                                <td class="font-weight-bold">UPE Results</td>
+                                <td>{{ $sr->upe_results }}</td>
+                            </tr>
+                            @endif
+
+                            @if($sr->uce_results)
+                            <tr>
+                                <td class="font-weight-bold">UCE Results</td>
+                                <td>{{ $sr->uce_results }}</td>
+                            </tr>
+                            @endif
+
+                            <tr>
+                                <td class="font-weight-bold">Fees Status</td>
+                                <td>
+                                    {!! $sr->fees
+                                        ? '<span class="badge badge-success">Paid</span>'
+                                        : '<span class="badge badge-danger">Not Paid</span>' !!}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="font-weight-bold">Graduated</td>
+                                <td>{{ $sr->grad ? 'Yes' : 'No' }}</td>
+                            </tr>
+
+                            @if($sr->grad_date)
+                            <tr>
+                                <td class="font-weight-bold">Graduation Date</td>
+                                <td>{{ $sr->grad_date }}</td>
+                            </tr>
+                            @endif
+
+                            <tr>
+                                <td class="font-weight-bold">Record Created</td>
+                                <td>{{ $sr->created_at->format('d M Y') }}</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -113,8 +196,5 @@
         </div>
     </div>
 </div>
-
-
-    {{--Student Profile Ends--}}
 
 @endsection
