@@ -78,9 +78,7 @@
                             <td>{{ $s->house ?? '-' }}</td>
 
                             <td>
-                                {!! $s->fees
-                                    ? '<span class="badge badge-success">Paid</span>'
-                                    : '<span class="badge badge-danger">Not Paid</span>' !!}
+                                {{ $s->fees ?? '-' }}
                             </td>
 
                             <td>{{ $s->year_admitted ?? '-' }}</td>
