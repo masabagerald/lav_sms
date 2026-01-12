@@ -7,7 +7,18 @@
 <div class="card">
     <div class="card-header header-elements-inline">
         <h6 class="card-title">Students List</h6>
+        <div class="header-elements">
+        @if(Qs::userIsTeamSA())
+            <button type="button"
+                    class="btn btn-sm btn-primary mr-2"
+                    data-toggle="modal"
+                    data-target="#bulkUploadModal">
+                <i class="icon-upload mr-1"></i> Bulk Upload
+            </button>
+        @endif
+
         {!! Qs::getPanelOptions() !!}
+    </div>
     </div>
 
     <div class="card-body">
@@ -77,9 +88,7 @@
                             <td>{{ $s->age ?? '-' }}</td>
                             <td>{{ $s->house ?? '-' }}</td>
 
-                            <td>
-                                {{ $s->fees ?? '-' }}
-                            </td>
+                            <td>{{ $s->fees ?? '-' }}</td>
 
                             <td>{{ $s->year_admitted ?? '-' }}</td>
 
@@ -234,5 +243,60 @@
         </div>
     </div>
 </div>
+
+{{-- =========================
+    BULK UPLOAD MODAL
+========================== --}}
+<div class="modal fade" id="bulkUploadModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+            <form method="POST"
+                  action="{{ route('students.import') }}"
+                  enctype="multipart/form-data">
+                @csrf
+
+                {{-- Pass current class automatically --}}
+                <input type="hidden" name="my_class_id" value="{{ $my_class->id }}">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Bulk Upload – {{ $my_class->name }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select CSV File</label>
+                        <input type="file"
+                               name="file"
+                               class="form-control"
+                               accept=".csv"
+                               required>
+
+                        <small class="text-muted">
+                            CSV only (Export from Excel)
+                        </small>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Upload Students
+                    </button>
+                    <button type="button" class="btn btn-light" data-dismiss="modal">
+                        Cancel
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
 
 @endsection
