@@ -29,7 +29,12 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('not_graduated/{id}', 'StudentRecordController@not_graduated')->name('st.not_graduated');
             Route::get('list/{class_id}', 'StudentRecordController@listByClass')->name('students.list')->middleware('teamSAT');
 
-             Route::post('import-user', 'StudentRecordController@importStudentsCsv')->name('students.import')->middleware('teamSAT');
+            Route::post('import-user', 'StudentRecordController@importStudents')->name('students.import')->middleware('teamSAT');
+
+            Route::get('/students/import-progress/{class}', 'StudentRecordController@importProgress')->name('students.import.progress')->middleware('teamSAT');
+
+            
+
 
             
 

@@ -270,23 +270,24 @@
 
                 <div class="modal-body">
                     <div class="form-group">
-                        <label>Select CSV File</label>
+                        <label>Select Excel File</label>
                         <input type="file"
                                name="file"
                                class="form-control"
-                               accept=".csv"
+                               accept=".xls,.xlsx"
                                required>
 
                         <small class="text-muted">
-                            CSV only (Export from Excel)
+                            EXCEL only
                         </small>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">
+                   <button type="submit" class="btn btn-primary" id="uploadBtn">
                         Upload Students
                     </button>
+
                     <button type="button" class="btn btn-light" data-dismiss="modal">
                         Cancel
                     </button>
@@ -297,6 +298,80 @@
         </div>
     </div>
 </div>
+
+<div id="importProgressBox" class="mt-3" style="display:none;">
+    <div class="alert alert-info">
+        <strong>Importing students…</strong>
+        <div class="progress mt-2">
+            <div id="importProgressBar"
+                 class="progress-bar progress-bar-striped progress-bar-animated"
+                 style="width:0%">0%</div>
+        </div>
+        <small id="importProgressText" class="text-muted d-block mt-1">
+            Preparing import…
+        </small>
+    </div>
+</div>
+
+
+<script>
+    const progressUrl = "{{ route('students.import.progress', $my_class->id) }}";
+
+    $('form[action="{{ route('students.import') }}"]').on('submit', function (e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+
+        $('#uploadBtn').prop('disabled', true).text('Uploading...');
+        $('#bulkUploadModal').modal('hide');
+        $('#importProgressBox').show();
+
+        $.ajax({
+            url: "{{ route('students.import') }}",
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                pollProgress();
+            }
+        });
+    });
+
+    function pollProgress() {
+        const interval = setInterval(() => {
+            $.get(progressUrl, function (data) {
+
+                if (!data.total) return;
+
+                let percent = Math.round((data.processed / data.total) * 100);
+
+                $('#importProgressBar')
+                    .css('width', percent + '%')
+                    .text(percent + '%');
+
+                $('#importProgressText')
+                    .text(`${data.processed} of ${data.total} processed`);
+
+                if (data.status === 'done') {
+                    clearInterval(interval);
+
+                    $('#importProgressBar')
+                        .removeClass('progress-bar-animated')
+                        .addClass('bg-success')
+                        .text('Completed');
+
+                    $('#importProgressText').text('Import completed successfully.');
+
+                    setTimeout(() => location.reload(), 1500);
+                }
+            });
+        }, 1500);
+    }
+</script>
+
+
+
 
 
 @endsection
