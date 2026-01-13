@@ -273,7 +273,7 @@ function startPolling() {
 $(document).ready(function () {
     $.get(progressUrl, function (data) {
         if (data.status === 'running' || data.status === 'queued') {
-            lockUI();
+          //  lockUI();
             startPolling();
         }
     });
