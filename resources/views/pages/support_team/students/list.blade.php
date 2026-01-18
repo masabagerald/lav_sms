@@ -117,13 +117,30 @@
                             <td>{{ $s->year_admitted ?? '-' }}</td>
 
                             <td class="text-center">
-                                <div class="list-icons">
-                                    <a href="#" class="list-icons-item lock-during-import"
-                                       data-toggle="dropdown">
-                                        <i class="icon-menu9"></i>
-                                    </a>
-                                </div>
-                            </td>
+                                        <div class="list-icons">
+                                            <div class="dropdown">
+                                                <a href="#" class="list-icons-item" data-toggle="dropdown">
+                                                    <i class="icon-menu9"></i>
+                                                </a>
+
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a href="{{ route('students.show', Qs::hash($s->id)) }}" class="dropdown-item"><i class="icon-eye"></i> View Info</a>
+                                                    @if(Qs::userIsTeamSA())
+                                                        <a href="{{ route('students.edit', Qs::hash($s->id)) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
+                                                        <a href="{{ route('st.reset_pass', Qs::hash($s->user->id)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
+                                                    @endif
+                                                    <a href="#" class="dropdown-item"><i class="icon-check"></i> Marksheet</a>
+
+                                                    {{--Delete--}}
+                                                    @if(Qs::userIsSuperAdmin())
+                                                        <a id="{{ Qs::hash($s->user->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                        <form method="post" id="item-delete-{{ Qs::hash($s->user->id) }}" action="{{ route('students.destroy', Qs::hash($s->user->id)) }}" class="hidden">@csrf @method('delete')</form>
+                                                    @endif
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                         </tr>
                     @endforeach
                     </tbody>
