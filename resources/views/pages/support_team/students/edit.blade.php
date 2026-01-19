@@ -36,7 +36,7 @@
 
                 <div class="col-md-6">
                     <label>Address: <span class="text-danger">*</span></label>
-                    <input type="text" name="address" required
+                    <input type="text" name="address"
                            value="{{ $sr->user->address }}"
                            class="form-control">
                 </div>
@@ -72,7 +72,7 @@
             <div class="row mt-2">
                 <div class="col-md-4">
                     <label>Nationality: <span class="text-danger">*</span></label>
-                    <select name="nal_id" required class="select-search form-control">
+                    <select name="nal_id" class="select-search form-control">
                         <option value=""></option>
                         @foreach($nationals as $nal)
                             <option value="{{ $nal->id }}"
@@ -85,7 +85,7 @@
 
                 <div class="col-md-4">
                     <label>District: <span class="text-danger">*</span></label>
-                    <select name="state_id" required class="select-search form-control">
+                    <select name="state_id"  class="select-search form-control">
                         <option value=""></option>
                         @foreach($states as $st)
                             <option value="{{ $st->id }}"
