@@ -165,9 +165,8 @@
                             <tr>
                                 <td class="font-weight-bold">Fees Status</td>
                                 <td>
-                                    {!! $sr->fees
-                                        ? '<span class="badge badge-success">Paid</span>'
-                                        : '<span class="badge badge-danger">Not Paid</span>' !!}
+                                    {{ $sr->fees }}                                    
+                                        
                                 </td>
                             </tr>
 
