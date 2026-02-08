@@ -26,6 +26,7 @@ use Illuminate\Support\Str;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\QueryException;
 
 
 
@@ -62,45 +63,71 @@ class StudentRecordController extends Controller
         return view('pages.support_team.students.add', $data);
     }
 
-    public function store(StudentRecordCreate $req)
-    {
-       
-       $data =  $req->only(Qs::getUserRecord());
-       $sr =  $req->only(Qs::getStudentData());
 
-        $ct = $this->my_class->findTypeByClass($req->my_class_id)->code;
-       /* $ct = ($ct == 'J') ? 'JSS' : $ct;
-        $ct = ($ct == 'S') ? 'SS' : $ct;*/
+public function store(StudentRecordCreate $req)
+{
+    $data = $req->only(Qs::getUserRecord());
+    $sr   = $req->only(Qs::getStudentData());
 
-        $data['user_type'] = 'student';
-        $data['name'] = ucwords($req->name);
-        $data['code'] = strtoupper(Str::random(10));
-        $data['password'] = Hash::make('student');
-        $data['photo'] = Qs::getDefaultUserImage();
-        $adm_no = $req->adm_no;
+    $ct = $this->my_class->findTypeByClass($req->my_class_id)->code;
 
-        $year = $sr['year_admitted'];   
+    $data['user_type'] = 'student';
+    $data['name']      = ucwords($req->name);
+    $data['code']      = strtoupper(Str::random(10));
+    $data['password'] = Hash::make('student');
+    $data['photo']    = Qs::getDefaultUserImage();
 
-        $data['username'] = AdminNoHelper::generateAdmissionNo($ct, $sr['year_admitted']);     
+    $year = $sr['year_admitted'];
 
-    
-        if($req->hasFile('photo')) {
-            $photo = $req->file('photo');
-            $f = Qs::getFileMetaData($photo);
-            $f['name'] = 'photo.' . $f['ext'];
-            $f['path'] = $photo->storeAs(Qs::getUploadPath('student').$data['code'], $f['name']);
-            $data['photo'] = asset('storage/' . $f['path']);
+    if ($req->hasFile('photo')) {
+        $photo = $req->file('photo');
+        $f = Qs::getFileMetaData($photo);
+        $f['name'] = 'photo.' . $f['ext'];
+        $f['path'] = $photo->storeAs(
+            Qs::getUploadPath('student') . $data['code'],
+            $f['name']
+        );
+        $data['photo'] = asset('storage/' . $f['path']);
+    }
+
+    $maxRetries = 5;
+    $attempts   = 0;
+
+    do {
+        try {
+            DB::transaction(function () use (&$data, &$sr, $ct, $year) {
+
+                // 🔁 regenerate every retry
+                $data['username'] = AdminNoHelper::generateAdmissionNo($ct, $year);
+
+                $user = $this->user->create($data);
+
+                $sr['adm_no']  = $data['username'];
+                $sr['user_id'] = $user->id;
+                $sr['session'] = Qs::getSetting('current_session');
+
+                $this->student->createRecord($sr);
+            });
+
+            // ✅ success → exit loop
+            break;
+
+        } catch (QueryException $e) {
+
+            // MySQL duplicate key error
+            if ($e->errorInfo[1] === 1062 && ++$attempts < $maxRetries) {
+                usleep(100000); // 100ms backoff
+                continue;
+            }
+
+            throw $e;
         }
 
-        $user = $this->user->create($data); // Create User
+    } while ($attempts < $maxRetries);
 
-        $sr['adm_no'] = $data['username'];
-        $sr['user_id'] = $user->id;
-        $sr['session'] = Qs::getSetting('current_session');
+    return Qs::jsonStoreOk();
+}
 
-        $this->student->createRecord($sr); // Create Student
-        return Qs::jsonStoreOk();
-    }
 
     public function listByClass($class_id)
     {
