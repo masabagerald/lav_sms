@@ -39,10 +39,8 @@ class SectionsTableSeeder extends Seeder
             ['name' => 'S5S', 'my_class_id' => $c[4], 'active' => 1],
             ['name' => 'S5P', 'my_class_id' => $c[4], 'active' => 1],
             ['name' => 'S5Q', 'my_class_id' => $c[4], 'active' => 1],
-            ['name' => 'S6K', 'my_class_id' => $c[5], 'active' => 1],
             ['name' => 'S6S', 'my_class_id' => $c[5], 'active' => 1],
             ['name' => 'S6P', 'my_class_id' => $c[5], 'active' => 1],
-            ['name' => 'S6Q', 'my_class_id' => $c[5], 'active' => 1],
         ];
 
         DB::table('sections')->insert($data);
