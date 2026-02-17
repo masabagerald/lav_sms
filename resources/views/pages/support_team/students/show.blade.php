@@ -83,6 +83,7 @@
                                 <td class="font-weight-bold">Parent</td>
                                 <td>{{ $sr->my_parent->name }}</td>
                             </tr>
+                            
                             @endif
 
                             @if($sr->dorm_id)
@@ -117,6 +118,10 @@
                             <tr>
                                 <td class="font-weight-bold">Guardian Name</td>
                                 <td>{{ $sr->guardian_name }}</td>
+                            </tr>
+                             <tr>
+                                <td class="font-weight-bold">Parent contact</td>
+                                <td>{{ $sr->my_parent->phone}}</td>
                             </tr>
                             @endif
 

@@ -101,6 +101,8 @@
                         <tr>
                             <th>#</th>
                             <th>Student</th>
+                            <th>Parent/Guardian</th>
+                            <th>Parent/Guardian Contant</th>
                             <th>Class / Section</th>
                             <th>Adm No</th>
                              <th>Payment Type</th>
@@ -118,6 +120,8 @@
                             <tr class="{{ !$record->paid ? 'table-warning' : '' }}">
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $record->student->name ?? 'N/A' }}</td>
+                                <td>{{ $record->guardian_name?? 'N/A' }}</td>
+                                <td>{{ $record->my_parent->phone ?? 'N/A' }}</td>
                                 <td>{{ $record->student->Student_record->class_section }}</td>
                                 <td>{{ $record->student->Student_record->adm_no }}</td>
                                   <td>{{ $record->payment->title ?? ''}}</td>
