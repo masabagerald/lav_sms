@@ -120,8 +120,8 @@
                             <tr class="{{ !$record->paid ? 'table-warning' : '' }}">
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $record->student->name ?? 'N/A' }}</td>
-                                <td>{{ $record->guardian_name?? 'N/A' }}</td>
-                                <td>{{ $record->my_parent->phone ?? 'N/A' }}</td>
+                                <td>{{ $record->student->guardian_name?? 'N/A' }}</td>
+                                <td>{{ $record->student->student_record->my_parent->phone ?? 'N/A' }}</td>
                                 <td>{{ $record->student->Student_record->class_section }}</td>
                                 <td>{{ $record->student->Student_record->adm_no }}</td>
                                   <td>{{ $record->payment->title ?? ''}}</td>
