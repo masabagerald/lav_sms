@@ -52,9 +52,6 @@ class StudentRecord extends Eloquent
     return $class ?: $section;
 }
 
-public function payment_records(){
 
-return $this->hasMany(PaymentRecord::class ,'student_id');
-}
 
 }

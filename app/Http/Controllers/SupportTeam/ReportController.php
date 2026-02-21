@@ -65,67 +65,58 @@ public function index(Request $request)
         ));
     }
 
-
-
 public function paymentReport(Request $request)
 {
     $year       = $request->year ?? now()->year;
     $classId    = $request->my_class_id;
     $payment_id = $request->payment_id;
-    $status     = $request->paid; 
-    // 1 = fully paid
-    // 0 = partial
-    // 2 = not paid
+    $status     = $request->paid; // 1 = Fully Paid, 0 = Partial, 2 = Not Paid
 
     $classes = MyClass::all();
     $payment_types = Payment::all();
 
-    $students = StudentRecord::with([
-        'user',
-        'my_class',
-        'payment_records' => function ($query) use ($year, $payment_id) {
-            $query->where('year', $year);
+    // Load all students with class & section
+    $students = StudentRecord::with(['user', 'my_class', 'section'])
+        ->when($classId, fn($q) => $q->where('my_class_id', $classId))
+        ->get();
 
-            if ($payment_id) {
-                $query->where('payment_id', $payment_id);
-            }
-        }
-    ])
-    ->when($classId, function ($q) use ($classId) {
-        $q->where('my_class_id', $classId);
-    })
-    ->get();
+    // Map payment status per student
+    $students = $students->map(function($student) use ($year, $payment_id) {
+        $paymentRecord = PaymentRecord::where('student_id', $student->user_id)
+            ->where('year', $year)
+            ->when($payment_id, fn($q) => $q->where('payment_id', $payment_id))
+            ->first();
 
-    // Determine computed status
-    $students->map(function ($student) {
-        $record = $student->payment_records->first();
-
-        if (!$record) {
-            $student->payment_status = 2; // Not paid
-        } elseif ($record->paid == 1) {
-            $student->payment_status = 1; // Fully paid
+        // Determine status
+        if (!$paymentRecord) {
+            $student->payment_status = 2; // Not Paid
+        } elseif ($paymentRecord->paid == 0) {
+            $student->payment_status = 0; // Partial Paid
         } else {
-            $student->payment_status = 0; // Partial
+            $student->payment_status = 1; // Fully Paid
         }
 
         return $student;
     });
 
-    // Filter by selected status
+    // Filter by status if requested
     if ($status !== null && $status !== '') {
-        $students = $students->where('payment_status', (int)$status);
+        $students = $students->filter(fn($s) => $s->payment_status == $status);
     }
 
-    return view('pages.reports.payments.payment_report', compact(
-        'students',
-        'classes',
-        'payment_types',
-        'year',
-        'classId',
-        'payment_id',
-        'status'
-    ));
+    return view('pages.reports.payments.payment_report', [
+        'students'       => $students,
+        'classes'        => $classes,
+        'payment_types'  => $payment_types,
+        'year'           => $year,
+        'classId'        => $classId,
+        'payment_id'     => $payment_id,
+        'status'         => $status,
+    ]);
 }
+
+
+
 
 
 

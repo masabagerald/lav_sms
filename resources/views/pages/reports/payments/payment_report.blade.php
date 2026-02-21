@@ -12,8 +12,9 @@
 
     {{-- Summary Cards --}}
     @php
-        $paidCount = $students->where('has_paid', '>', 0)->count();
-        $notPaidCount = $students->where('has_paid', 0)->count();
+        $fullyPaid   = $students->where('payment_status', 1)->count();
+        $partialPaid = $students->where('payment_status', 0)->count();
+        $notPaid     = $students->where('payment_status', 2)->count();
         $totalStudents = $students->count();
     @endphp
 
@@ -21,8 +22,17 @@
         <div class="col-md-3">
             <div class="card border-success shadow-sm">
                 <div class="card-body text-center">
-                    <h6 class="text-muted">Students Paid</h6>
-                    <h4 class="fw-bold text-success">{{ $paidCount }}</h4>
+                    <h6 class="text-muted">Fully Paid</h6>
+                    <h4 class="fw-bold text-success">{{ $fullyPaid }}</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-warning shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Partial Paid</h6>
+                    <h4 class="fw-bold text-warning">{{ $partialPaid }}</h4>
                 </div>
             </div>
         </div>
@@ -30,8 +40,8 @@
         <div class="col-md-3">
             <div class="card border-danger shadow-sm">
                 <div class="card-body text-center">
-                    <h6 class="text-muted">Students Not Paid</h6>
-                    <h4 class="fw-bold text-danger">{{ $notPaidCount }}</h4>
+                    <h6 class="text-muted">Not Paid</h6>
+                    <h4 class="fw-bold text-danger">{{ $notPaid }}</h4>
                 </div>
             </div>
         </div>
@@ -90,14 +100,12 @@
                 {{-- Status --}}
                 <div class="col-md-2">
                     <label class="form-label">Status</label>
-
                     <select name="paid" class="form-select">
                         <option value="">All</option>
                         <option value="1" {{ $status === '1' ? 'selected' : '' }}>Fully Paid</option>
                         <option value="0" {{ $status === '0' ? 'selected' : '' }}>Partial Paid</option>
                         <option value="2" {{ $status === '2' ? 'selected' : '' }}>Not Paid</option>
                     </select>
-                    
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end">
@@ -126,17 +134,22 @@
                     </thead>
                     <tbody>
                         @forelse ($students as $student)
-                            <tr class="{{ $student->has_paid == 0 ? 'table-warning' : '' }}">
+                            <tr class="
+                                {{ $student->payment_status == 2 ? 'table-danger' : '' }}
+                                {{ $student->payment_status == 0 ? 'table-warning' : '' }}
+                            ">
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $student->user->name ?? '' }}</td>
-                                  <td>{{ $student->guardian_phone ?? $student->user->phone }}</td>
-                                <td>{{ $student->guardian_name ?? '' }}</td>
-                                <td>{{ $student->guardian_phone ?? '' }}</td>
-                                <td>{{ $student->class_section }}</td>
-                                <td>{{ $student->adm_no }}</td>
+                                <td>{{ $student->user->name ?? 'N/A' }}</td>
+                                <td>{{ $student->guardian_name ?? 'N/A' }}</td>
+                                <td>{{ $student->guardian_phone ?? $student->user->phone ?? 'N/A' }}</td>
+                                <td>{{ $student->my_class->name ?? 'N/A' }}</td>
+                                <td>{{ $student->section->name ?? 'N/A' }}</td>
+                                <td>{{ $student->adm_no ?? 'N/A' }}</td>
                                 <td>
-                                    @if($student->has_paid > 0)
-                                        <span class="badge bg-success">Paid</span>
+                                    @if($student->payment_status == 1)
+                                        <span class="badge bg-success">Fully Paid</span>
+                                    @elseif($student->payment_status == 0)
+                                        <span class="badge bg-warning text-dark">Partial Paid</span>
                                     @else
                                         <span class="badge bg-danger">Not Paid</span>
                                     @endif
@@ -144,7 +157,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted">No records found</td>
+                                <td colspan="8" class="text-center text-muted">No records found</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -156,11 +169,8 @@
 </div>
 
 {{-- DataTables --}}
-
 <script>
 $(document).ready(function () {
-
-    // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
 
     $('#spaymentTable').DataTable({
@@ -168,21 +178,12 @@ $(document).ready(function () {
         ordering: true,
         searching: true,
         responsive: true,
-        order: [[0, 'desc']],
+        order: [[0, 'asc']],
         dom: 'Bfrtip',
         buttons: [
-            {
-                extend: 'excel',
-                filename: 'payment_report_' + today
-            },
-            {
-                extend: 'csv',
-                filename: 'payment_report_' + today
-            },
-            {
-                extend: 'pdf',
-                filename: 'payment_report_' + today
-            }
+            { extend: 'excel', filename: 'payment_report_' + today },
+            { extend: 'csv', filename: 'payment_report_' + today },
+            { extend: 'pdf', filename: 'payment_report_' + today }
         ]
     });
 });
