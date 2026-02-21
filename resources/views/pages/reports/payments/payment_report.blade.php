@@ -129,6 +129,10 @@
                             <th>Class</th>
                             <th>Stream</th>
                             <th>Adm No</th>
+                            <th>Payment Type</th>
+                            <th>Ref No</th>
+                            <th class="text-end">Amount Paid</th>
+                            <th class="text-end">Balance</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -145,6 +149,10 @@
                                 <td>{{ $student->my_class->name ?? 'N/A' }}</td>
                                 <td>{{ $student->section->name ?? 'N/A' }}</td>
                                 <td>{{ $student->adm_no ?? 'N/A' }}</td>
+                                <td>{{ $student->payment_type ?? '-' }}</td>
+                                <td>{{ $student->ref_no ?? '-' }}</td>
+                                <td class="text-end">{{ number_format($student->amt_paid, 2) }}</td>
+                                <td class="text-end">{{ number_format($student->balance, 2) }}</td>
                                 <td>
                                     @if($student->payment_status == 1)
                                         <span class="badge bg-success">Fully Paid</span>
@@ -157,10 +165,23 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted">No records found</td>
+                                <td colspan="12" class="text-center text-muted">No records found</td>
                             </tr>
                         @endforelse
                     </tbody>
+
+                    {{-- Totals --}}
+                    @if($students->count())
+                    <tfoot class="table-secondary fw-bold text-end">
+                        <tr>
+                            <td colspan="9" class="text-end">TOTAL</td>
+                            <td>{{ number_format($students->sum('amt_paid'), 2) }}</td>
+                            <td>{{ number_format($students->sum('balance'), 2) }}</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                    @endif
+
                 </table>
             </div>
         </div>
