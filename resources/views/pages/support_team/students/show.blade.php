@@ -121,7 +121,7 @@
                             </tr>
                              <tr>
                                 <td class="font-weight-bold">Parent contact</td>
-                                <td>{{ $sr->my_parent->phone ?? ''}}</td>
+                                <td>{{ $sr->guardian_phone ?? $sr->user->phone}}</td>
                             </tr>
                             @endif
 

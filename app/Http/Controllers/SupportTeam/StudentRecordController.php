@@ -76,6 +76,8 @@ public function store(StudentRecordCreate $req)
     $data['code']      = strtoupper(Str::random(10));
     $data['password'] = Hash::make('student');
     $data['photo']    = Qs::getDefaultUserImage();
+    $data['guardian_phone']    = $req->phone;
+
 
     $year = $sr['year_admitted'];
 

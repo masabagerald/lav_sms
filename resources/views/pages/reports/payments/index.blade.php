@@ -121,7 +121,8 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $record->student->name ?? 'N/A' }}</td>
                                 <td>{{ $record->student->guardian_name?? 'N/A' }}</td>
-                                <td>{{ $record->student->student_record->my_parent->phone ?? 'N/A' }}</td>
+                            
+                                <td>{{ $record->student->student_record->guardian_phone ?? $record->student->student_record->user->phone }}</td>
                                 <td>{{ $record->student->Student_record->class_section }}</td>
                                 <td>{{ $record->student->Student_record->adm_no }}</td>
                                   <td>{{ $record->payment->title ?? ''}}</td>
