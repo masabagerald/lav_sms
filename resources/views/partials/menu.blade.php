@@ -83,6 +83,9 @@
                                     <li class="nav-item"><a href="{{ route('payments.manage') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.manage', 'payments.invoice', 'payments.receipts']) ? 'active' : '' }}">Student Payments</a></li>
 
                                     <li class="nav-item"><a href="{{ route('reports.index') }}" class="nav-link">Payment Report</a></li>
+                                     <li class="nav-item"><a href="{{ route('students.payments') }}" class="nav-link">Students Paymnets</a></li>
+
+ 
                                   
 
 

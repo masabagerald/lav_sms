@@ -66,6 +66,55 @@ public function index(Request $request)
     }
 
 
+
+public function paymentReport(Request $request)
+{
+    $year       = $request->year ?? now()->year;
+    $classId    = $request->my_class_id;
+    $payment_id = $request->payment_id;
+    $paid       = $request->paid; // 1 = paid, 0 = not paid
+
+    $classes = MyClass::all();
+    $payment_types = Payment::all();
+
+    $students = StudentRecord::with(['user', 'my_class'])
+        ->withCount(['payment_records as has_paid' => function ($query) use ($year, $payment_id) {
+            $query->where('year', $year);
+
+            if ($payment_id) {
+                $query->where('payment_id', $payment_id);
+            }
+        }])
+        ->when($classId, function ($q) use ($classId) {
+            $q->where('my_class_id', $classId);
+        })
+        ->get();
+
+    // Filter by paid status AFTER loading
+    if ($paid !== null && $paid !== '') {
+        $students = $students->filter(function ($student) use ($paid) {
+            return $paid == 1 
+                ? $student->has_paid > 0 
+                : $student->has_paid == 0;
+        });
+    }
+
+    return view('pages.reports.payments.payment_report', compact(
+        'students',
+        'classes',
+        'payment_types',
+        'year',
+        'classId',
+        'payment_id',
+        'paid'
+    ));
+}
+
+
+
+
+
+
   
 
 }

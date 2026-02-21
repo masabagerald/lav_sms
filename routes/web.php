@@ -161,6 +161,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/reports/payments', [ReportController::class, 'index'])
     ->name('reports.payments');
 
+    
+       
+     Route::get('/reports/student/payments', 'ReportController@paymentReport')->name('students.payments');
+       
+
+
+    
+
 
         // app\Http\Controllers\SupportTeam\ReportController.php
 
