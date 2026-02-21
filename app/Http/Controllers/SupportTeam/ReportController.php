@@ -72,31 +72,48 @@ public function paymentReport(Request $request)
     $year       = $request->year ?? now()->year;
     $classId    = $request->my_class_id;
     $payment_id = $request->payment_id;
-    $paid       = $request->paid; // 1 = paid, 0 = not paid
+    $status     = $request->paid; 
+    // 1 = fully paid
+    // 0 = partial
+    // 2 = not paid
 
     $classes = MyClass::all();
     $payment_types = Payment::all();
 
-    $students = StudentRecord::with(['user', 'my_class'])
-        ->withCount(['payment_records as has_paid' => function ($query) use ($year, $payment_id) {
+    $students = StudentRecord::with([
+        'user',
+        'my_class',
+        'payment_records' => function ($query) use ($year, $payment_id) {
             $query->where('year', $year);
 
             if ($payment_id) {
                 $query->where('payment_id', $payment_id);
             }
-        }])
-        ->when($classId, function ($q) use ($classId) {
-            $q->where('my_class_id', $classId);
-        })
-        ->get();
+        }
+    ])
+    ->when($classId, function ($q) use ($classId) {
+        $q->where('my_class_id', $classId);
+    })
+    ->get();
 
-    // Filter by paid status AFTER loading
-    if ($paid !== null && $paid !== '') {
-        $students = $students->filter(function ($student) use ($paid) {
-            return $paid == 1 
-                ? $student->has_paid > 0 
-                : $student->has_paid == 0;
-        });
+    // Determine computed status
+    $students->map(function ($student) {
+        $record = $student->payment_records->first();
+
+        if (!$record) {
+            $student->payment_status = 2; // Not paid
+        } elseif ($record->paid == 1) {
+            $student->payment_status = 1; // Fully paid
+        } else {
+            $student->payment_status = 0; // Partial
+        }
+
+        return $student;
+    });
+
+    // Filter by selected status
+    if ($status !== null && $status !== '') {
+        $students = $students->where('payment_status', (int)$status);
     }
 
     return view('pages.reports.payments.payment_report', compact(
@@ -106,10 +123,9 @@ public function paymentReport(Request $request)
         'year',
         'classId',
         'payment_id',
-        'paid'
+        'status'
     ));
 }
-
 
 
 

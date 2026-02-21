@@ -90,11 +90,14 @@
                 {{-- Status --}}
                 <div class="col-md-2">
                     <label class="form-label">Status</label>
+
                     <select name="paid" class="form-select">
                         <option value="">All</option>
-                        <option value="1" {{ $paid === '1' ? 'selected' : '' }}>Paid</option>
-                        <option value="0" {{ $paid === '0' ? 'selected' : '' }}>Not Paid</option>
+                        <option value="1" {{ $status === '1' ? 'selected' : '' }}>Fully Paid</option>
+                        <option value="0" {{ $status === '0' ? 'selected' : '' }}>Partial Paid</option>
+                        <option value="2" {{ $status === '2' ? 'selected' : '' }}>Not Paid</option>
                     </select>
+                    
                 </div>
 
                 <div class="col-md-2 d-flex align-items-end">
@@ -108,7 +111,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
-                <table id="paymentTable" class="table table-bordered table-striped table-hover">
+                <table id="spaymentTable" class="table table-bordered table-striped table-hover">
                     <thead class="table-dark text-center">
                         <tr>
                             <th>#</th>
@@ -116,6 +119,7 @@
                             <th>Guardian</th>
                             <th>Contact</th>
                             <th>Class</th>
+                            <th>Stream</th>
                             <th>Adm No</th>
                             <th>Status</th>
                         </tr>
@@ -159,7 +163,7 @@ $(document).ready(function () {
     // Get today's date in YYYY-MM-DD format
     const today = new Date().toISOString().split('T')[0];
 
-    $('#paymentTable').DataTable({
+    $('#spaymentTable').DataTable({
         pageLength: 10,
         ordering: true,
         searching: true,
