@@ -4,42 +4,46 @@
 
 @section('content')
 
-{{-- =========================
-    STYLES
-========================== --}}
 <style>
-#importOverlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
+#importOverlay{
+    position:fixed;
+    inset:0;
+    z-index:9999;
 }
-.import-overlay-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
+
+.import-overlay-backdrop{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.45);
 }
-.import-overlay-card {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 25px 30px;
-    border-radius: 8px;
-    width: 360px;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+
+.import-overlay-card{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    padding:30px;
+    border-radius:8px;
+    width:360px;
+    text-align:center;
+    box-shadow:0 10px 40px rgba(0,0,0,.3);
+}
+
+.table-responsive{
+    overflow-x:auto;
 }
 </style>
 
 <div class="card">
-    <div class="card-header header-elements-inline">
-        <h6 class="card-title">Students List</h6>
 
-        <div class="header-elements">
+    <div class="card-header d-flex justify-content-between align-items-center">
+
+        <h6 class="card-title mb-0">Students List</h6>
+
+        <div>
             @if(Qs::userIsTeamSA())
-                <button type="button"
-                        class="btn btn-sm btn-primary mr-2 lock-during-import"
+                <button class="btn btn-primary btn-sm"
                         data-toggle="modal"
                         data-target="#bulkUploadModal">
                     <i class="icon-upload mr-1"></i> Bulk Upload
@@ -48,312 +52,291 @@
 
             {!! Qs::getPanelOptions() !!}
         </div>
+
     </div>
 
     <div class="card-body">
 
-        {{-- ================= TABS ================= --}}
-        <ul class="nav nav-tabs nav-tabs-highlight">
+        {{-- Tabs --}}
+        <ul class="nav nav-tabs nav-tabs-highlight mb-3">
+
             <li class="nav-item">
-                <a href="#all-students" class="nav-link active" data-toggle="tab">
-                    All {{ $my_class->name }} Students
+                <a class="nav-link active" data-toggle="tab" href="#allStudents">
+                    All {{ $my_class->name }}
                 </a>
             </li>
 
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown">
                     Sections
                 </a>
+
                 <div class="dropdown-menu dropdown-menu-right">
                     @foreach($sections as $s)
-                        <a href="#s{{ $s->id }}" class="dropdown-item" data-toggle="tab">
-                            {{ $my_class->name.' '.$s->name }}
+                        <a class="dropdown-item"
+                           data-toggle="tab"
+                           href="#section{{ $s->id }}">
+                            {{ $my_class->name }} {{ $s->name }}
                         </a>
                     @endforeach
                 </div>
             </li>
+
         </ul>
 
-        {{-- ================= TAB CONTENT ================= --}}
         <div class="tab-content">
 
-            {{-- ================= ALL STUDENTS ================= --}}
-            <div class="tab-pane fade show active" id="all-students">
-                <table class="table datatable-button-html5-columns">
-                    <thead>
-                    <tr>
-                        <th>S/N</th>
-                        <th>Photo</th>
-                        <th>Name</th>
-                        <th>ADM No</th>
-                        <th>Section</th>
-                        <th>Gender</th>
-                        <th>Age</th>
-                        <th>House</th>
-                        <th>Fees</th>
-                        <th>Year Admitted</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
+            {{-- ALL STUDENTS --}}
+            <div class="tab-pane fade show active" id="allStudents">
 
-                    <tbody>
-                    @foreach($students as $s)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
+                @include('pages.support_team.students.partials.students-table',[
+                    'students'=>$students,
+                    'my_class'=>$my_class
+                ])
 
-                            <td>
-                                <img class="rounded-circle"
-                                     style="height:40px;width:40px;object-fit:cover;"
-                                     src="{{ optional($s->user)->photo ?? asset('images/default-user.png') }}">
-                            </td>
-
-                            <td>{{ $s->user->name ?? '' }}</td>
-                            <td>{{ $s->adm_no }}</td>
-                            <td>{{ $my_class->name.' '.$s->section->name }}</td>
-                            <td>{{ $s->user->gender ?? '-' }}</td>
-                            <td>{{ $s->age ?? '-' }}</td>
-                            <td>{{ $s->house ?? '-' }}</td>
-                            <td>{{ $s->fees ?? '-' }}</td>
-                            <td>{{ $s->year_admitted ?? '-' }}</td>
-
-                            <td class="text-center">
-                                        <div class="list-icons">
-                                            <div class="dropdown">
-                                                <a href="#" class="list-icons-item" data-toggle="dropdown">
-                                                    <i class="icon-menu9"></i>
-                                                </a>
-
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a href="{{ route('students.show', Qs::hash($s->id)) }}" class="dropdown-item"><i class="icon-eye"></i> View Info</a>
-                                                    @if(Qs::userIsTeamSA())
-                                                        <a href="{{ route('students.edit', Qs::hash($s->id)) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
-                                                       
-                                                        <a href="{{ route('st.reset_pass', Qs::hash(optional($s->user)->name)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
-                                                    @endif
-                                                    <a href="#" class="dropdown-item"><i class="icon-check"></i> Marksheet</a>
-
-                                                    {{--Delete--}}
-                                                    @if(Qs::userIsSuperAdmin())
-                                                        <a id="{{ Qs::hash(optional($s->user)->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
-                                                        <form method="post" id="item-delete-{{ Qs::hash(optional($s->user)->id) }}" action="{{ route('students.destroy', Qs::hash(optional($s->user)->id)) }}" class="hidden">@csrf @method('delete')</form>
-                                                    @endif
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
             </div>
-             @foreach($sections as $se)
-                    <div class="tab-pane fade" id="s{{$se->id}}">                         <table class="table datatable-button-html5-columns">
-                            <thead>
-                            <tr>
-                                <th>S/N</th>
-                                <th>Photo</th>
-                                <th>Name</th>
-                                <th>ADM_No</th>
-                                <th>Email</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($students->where('section_id', $se->id) as $sr)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td><img class="rounded-circle" style="height: 40px; width: 40px;" src="{{ optional($s->user)->photo }}" alt="photo"></td>
-                                    <td>{{ optional($s->user)->name }}</td>
-                                    <td>{{ $sr->adm_no }}</td>
-                                    <td>{{ optional($s->user)->email }}</td>
-                                    <td class="text-center">
-                                        <div class="list-icons">
-                                            <div class="dropdown">
-                                                <a href="#" class="list-icons-item" data-toggle="dropdown">
-                                                    <i class="icon-menu9"></i>
-                                                </a>
 
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a href="{{ route('students.show', Qs::hash($sr->id)) }}" class="dropdown-item"><i class="icon-eye"></i> View Info</a>
-                                                    @if(Qs::userIsTeamSA())
-                                                        <a href="{{ route('students.edit', Qs::hash(optional($s->user)->id)) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
-                                                        <a href="{{ route('st.reset_pass', Qs::hash(optional($s->user)->id)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
-                                                    @endif
-                                                    <a href="#" class="dropdown-item"><i class="icon-check"></i> Marksheet</a>
 
-                                                    {{--Delete--}}
-                                                    @if(Qs::userIsSuperAdmin())
-                                                        <a id="{{ Qs::hash(optional($s->user)->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
-                                                        <form method="post" id="item-delete-{{ Qs::hash(optional($s->user)->id) }}" action="{{ route('students.destroy', Qs::hash(optional($s->user)->id)) }}" class="hidden">@csrf @method('delete')</form>
-                                                    @endif
+            {{-- SECTION STUDENTS --}}
+            @foreach($sections as $se)
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
+                <div class="tab-pane fade" id="section{{$se->id}}">
 
-                            </tbody>
-                        </table>
-                    </div>
-                @endforeach
+                    @include('pages.support_team.students.partials.students-table',[
+                        'students'=>$students->where('section_id',$se->id),
+                        'my_class'=>$my_class
+                    ])
 
+                </div>
+
+            @endforeach
 
         </div>
 
     </div>
+
 </div>
 
-{{-- =========================
-    BULK UPLOAD MODAL
-========================== --}}
-<div class="modal fade" id="bulkUploadModal" tabindex="-1">
+
+
+{{-- BULK UPLOAD MODAL --}}
+<div class="modal fade" id="bulkUploadModal">
+
     <div class="modal-dialog modal-sm">
-        <div class="modal-content">
 
-            <form method="POST"
-                  action="{{ route('students.import') }}"
-                  enctype="multipart/form-data">
-                @csrf
+        <form method="POST"
+              action="{{ route('students.import') }}"
+              enctype="multipart/form-data"
+              class="modal-content">
 
-                <input type="hidden" name="my_class_id" value="{{ $my_class->id }}">
+            @csrf
 
-                <div class="modal-header">
-                    <h5 class="modal-title">Bulk Upload – {{ $my_class->name }}</h5>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
+            <input type="hidden"
+                   name="my_class_id"
+                   value="{{ $my_class->id }}">
 
-                <div class="modal-body">
-                    <input type="file"
-                           name="file"
-                           class="form-control"
-                           accept=".xls,.xlsx"
-                           required>
-                    <small class="text-muted">Excel files only</small>
-                </div>
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Bulk Upload – {{ $my_class->name }}
+                </h5>
+                <button class="close" data-dismiss="modal">&times;</button>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="submit"
-                            class="btn btn-primary"
-                            id="uploadBtn">
-                        Upload Students
-                    </button>
-                    <button type="button"
-                            class="btn btn-light"
-                            data-dismiss="modal">
-                        Cancel
-                    </button>
-                </div>
+            <div class="modal-body">
 
-            </form>
-        </div>
+                <input type="file"
+                       name="file"
+                       class="form-control"
+                       accept=".xls,.xlsx"
+                       required>
+
+                <small class="text-muted">Excel only</small>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button class="btn btn-primary" id="uploadBtn">
+                    Upload Students
+                </button>
+
+                <button type="button"
+                        class="btn btn-light"
+                        data-dismiss="modal">
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
+
 </div>
 
-{{-- =========================
-    FULLSCREEN IMPORT OVERLAY
-========================== --}}
-<div id="importOverlay" style="display:none;">
+
+
+{{-- IMPORT / DELETE OVERLAY --}}
+<div id="importOverlay" style="display:none">
+
     <div class="import-overlay-backdrop"></div>
 
     <div class="import-overlay-card">
-        <h5>Importing Students</h5>
-        <p class="text-muted">
-            Please wait. Do not refresh or leave this page.
+
+        <div class="spinner-border text-primary mb-3"></div>
+
+        <h5 id="overlayTitle">Processing...</h5>
+
+        <p id="overlayMessage" class="text-muted">
+            Please wait...
         </p>
 
-        <div class="progress mb-2">
+        <div class="progress mb-2" id="importProgressWrapper">
+
             <div id="importProgressBar"
                  class="progress-bar progress-bar-striped progress-bar-animated"
-                 style="width:0%">0%</div>
+                 style="width:0%">
+                 0%
+            </div>
+
         </div>
 
-        <small id="importProgressText" class="text-muted">
+        <small id="importProgressText">
             Preparing import…
         </small>
+
     </div>
+
 </div>
 
-{{-- =========================
-    JAVASCRIPT
-========================== --}}
-<script>
-const progressUrl = "{{ route('students.import.progress', $my_class->id) }}";
-let pollInterval = null;
 
-$('form[action="{{ route('students.import') }}"]').on('submit', function (e) {
+
+<script>
+
+const progressUrl = "{{ route('students.import.progress',$my_class->id) }}";
+
+let pollInterval=null;
+
+
+
+/* IMPORT */
+
+$('form[action="{{ route('students.import') }}"]').submit(function(e){
+
     e.preventDefault();
 
-    let formData = new FormData(this);
+    let formData=new FormData(this);
+
     lockUI();
+
     $('#bulkUploadModal').modal('hide');
 
     $.ajax({
-        url: "{{ route('students.import') }}",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: startPolling,
-        error: unlockUI
+
+        url:"{{ route('students.import') }}",
+
+        method:"POST",
+
+        data:formData,
+
+        processData:false,
+
+        contentType:false,
+
+        success:startPolling,
+
+        error:unlockUI
+
     });
+
 });
 
-function lockUI() {
+
+
+function lockUI(){
+
+    $('#overlayTitle').text('Importing students');
+
+    $('#overlayMessage').text('Please wait while students are uploaded.');
+
+    $('#importProgressWrapper').show();
+
     $('#importOverlay').fadeIn(150);
-    $('.lock-during-import').prop('disabled', true);
+
 }
 
-function unlockUI() {
+
+
+function unlockUI(){
+
     clearInterval(pollInterval);
+
     $('#importOverlay').fadeOut(150);
-    $('.lock-during-import').prop('disabled', false);
+
 }
 
-function startPolling() {
-    pollInterval = setInterval(() => {
-        $.get(progressUrl, function (data) {
-            if (!data.total) return;
 
-            let percent = Math.round((data.processed / data.total) * 100);
+
+function startPolling(){
+
+    pollInterval=setInterval(()=>{
+
+        $.get(progressUrl,function(data){
+
+            if(!data.total) return;
+
+            let percent=Math.round((data.processed/data.total)*100);
 
             $('#importProgressBar')
-                .css('width', percent + '%')
-                .text(percent + '%');
+
+                .css('width',percent+'%')
+
+                .text(percent+'%');
 
             $('#importProgressText')
-                .text(`${data.processed} of ${data.total} students processed`);
 
-            if (data.status === 'done' || data.processed >= data.total) {
-                $('#importProgressBar')
-                    .removeClass('progress-bar-animated')
-                    .addClass('bg-success')
-                    .text('Completed');
+                .text(`${data.processed} of ${data.total} processed`);
 
-                setTimeout(() => {
+            if(data.status==='done'||data.processed>=data.total){
+
+                setTimeout(()=>{
+
                     unlockUI();
+
                     location.reload();
-                }, 1200);
+
+                },1200);
+
             }
+
         });
-    }, 1200);
+
+    },1200);
+
 }
 
-// Resume progress if page refreshed mid-import
-$(document).ready(function () {
-    $.get(progressUrl, function (data) {
-        if (data.status === 'running' || data.status === 'queued') {
-          //  lockUI();
-            startPolling();
-        }
-    });
-});
+
+
+/* DELETE */
+
+function confirmDelete(id){
+
+    if(!confirm('Delete this student permanently?')) return;
+
+    $('#overlayTitle').text('Deleting student');
+
+    $('#overlayMessage').text('Please wait while the student is removed.');
+
+    $('#importProgressWrapper').hide();
+
+    $('#importOverlay').fadeIn(150);
+
+    document.getElementById('item-delete-'+id).submit();
+
+}
+
+
+
 </script>
 
 @endsection
-
-
-
-
