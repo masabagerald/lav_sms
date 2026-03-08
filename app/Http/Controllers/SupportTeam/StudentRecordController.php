@@ -21,9 +21,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Log;
+
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\QueryException;
@@ -216,18 +217,56 @@ public function store(StudentRecordCreate $req)
         return Qs::jsonUpdateOk();
     }
 
-    public function destroy($st_id)
-    {
-        $st_id = Qs::decodeHash($st_id);
-        if(!$st_id){return Qs::goWithDanger();}
+
+
+public function destroy($st_id)
+{
+    $st_id = Qs::decodeHash($st_id);
+
+    if (!$st_id) {
+        return Qs::goWithDanger();
+    }
+
+    DB::beginTransaction();
+
+    try {
 
         $sr = $this->student->getRecord(['user_id' => $st_id])->first();
-        $path = Qs::getUploadPath('student').$sr->user->code;
-        Storage::exists($path) ? Storage::deleteDirectory($path) : false;
-        $this->user->delete($sr->user->id);
+
+        if (!$sr) {
+            DB::rollBack();
+            return back()->with('flash_danger', 'Student not found');
+        }
+
+        $user = $sr->user;
+
+        if ($user) {
+
+            $path = Qs::getUploadPath('student') . $user->code;
+
+            if (Storage::exists($path)) {
+                Storage::deleteDirectory($path);
+            }
+
+            $user->delete();
+        }
+
+        $sr->delete();
+
+        DB::commit();
 
         return back()->with('flash_success', __('msg.del_ok'));
+
+    } catch (\Throwable $e) {
+
+        DB::rollBack();
+
+        Log::error($e->getMessage());
+
+        return back()->with('flash_danger', 'Deletion failed');
     }
+}
+
 
 
 

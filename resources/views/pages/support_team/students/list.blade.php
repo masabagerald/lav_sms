@@ -127,14 +127,15 @@
                                                     <a href="{{ route('students.show', Qs::hash($s->id)) }}" class="dropdown-item"><i class="icon-eye"></i> View Info</a>
                                                     @if(Qs::userIsTeamSA())
                                                         <a href="{{ route('students.edit', Qs::hash($s->id)) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
-                                                        <a href="{{ route('st.reset_pass', Qs::hash($s->user->id)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
+                                                       
+                                                        <a href="{{ route('st.reset_pass', Qs::hash(optional($s->user)->name)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
                                                     @endif
                                                     <a href="#" class="dropdown-item"><i class="icon-check"></i> Marksheet</a>
 
                                                     {{--Delete--}}
                                                     @if(Qs::userIsSuperAdmin())
-                                                        <a id="{{ Qs::hash($s->user->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
-                                                        <form method="post" id="item-delete-{{ Qs::hash($s->user->id) }}" action="{{ route('students.destroy', Qs::hash($s->user->id)) }}" class="hidden">@csrf @method('delete')</form>
+                                                        <a id="{{ Qs::hash(optional($s->user)->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                        <form method="post" id="item-delete-{{ Qs::hash(optional($s->user)->id) }}" action="{{ route('students.destroy', Qs::hash(optional($s->user)->id)) }}" class="hidden">@csrf @method('delete')</form>
                                                     @endif
 
                                                 </div>
@@ -162,10 +163,10 @@
                             @foreach($students->where('section_id', $se->id) as $sr)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td><img class="rounded-circle" style="height: 40px; width: 40px;" src="{{ $sr->user->photo }}" alt="photo"></td>
-                                    <td>{{ $sr->user->name }}</td>
+                                    <td><img class="rounded-circle" style="height: 40px; width: 40px;" src="{{ optional($s->user)->photo }}" alt="photo"></td>
+                                    <td>{{ optional($s->user)->name }}</td>
                                     <td>{{ $sr->adm_no }}</td>
-                                    <td>{{ $sr->user->email }}</td>
+                                    <td>{{ optional($s->user)->email }}</td>
                                     <td class="text-center">
                                         <div class="list-icons">
                                             <div class="dropdown">
@@ -176,15 +177,15 @@
                                                 <div class="dropdown-menu dropdown-menu-right">
                                                     <a href="{{ route('students.show', Qs::hash($sr->id)) }}" class="dropdown-item"><i class="icon-eye"></i> View Info</a>
                                                     @if(Qs::userIsTeamSA())
-                                                        <a href="{{ route('students.edit', Qs::hash($sr->id)) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
-                                                        <a href="{{ route('st.reset_pass', Qs::hash($sr->user->id)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
+                                                        <a href="{{ route('students.edit', Qs::hash(optional($s->user)->id)) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
+                                                        <a href="{{ route('st.reset_pass', Qs::hash(optional($s->user)->id)) }}" class="dropdown-item"><i class="icon-lock"></i> Reset password</a>
                                                     @endif
                                                     <a href="#" class="dropdown-item"><i class="icon-check"></i> Marksheet</a>
 
                                                     {{--Delete--}}
                                                     @if(Qs::userIsSuperAdmin())
-                                                        <a id="{{ Qs::hash($sr->user->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
-                                                        <form method="post" id="item-delete-{{ Qs::hash($sr->user->id) }}" action="{{ route('students.destroy', Qs::hash($sr->user->id)) }}" class="hidden">@csrf @method('delete')</form>
+                                                        <a id="{{ Qs::hash(optional($s->user)->id) }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                        <form method="post" id="item-delete-{{ Qs::hash(optional($s->user)->id) }}" action="{{ route('students.destroy', Qs::hash(optional($s->user)->id)) }}" class="hidden">@csrf @method('delete')</form>
                                                     @endif
 
                                                 </div>
