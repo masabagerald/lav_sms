@@ -55,12 +55,7 @@
                                     @csrf
 
                                     <td style="min-width: 160px;">
-                                        <select name="term" class="form-control w-100">
-                                            <option value="">Select Term</option>
-                                            <option value="1">Term 1</option>
-                                            <option value="2">Term 2</option>
-                                            <option value="3">Term 3</option>
-                                        </select>
+                                        <input type="date" name="payment_date" class="form-control"/>
                                     </td>
 
                                     
