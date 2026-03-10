@@ -42,7 +42,6 @@ class SectionsTableSeeder extends Seeder
             ['name' => 'S6S', 'my_class_id' => $c[5], 'active' => 1],
             ['name' => 'S6P', 'my_class_id' => $c[5], 'active' => 1],
         ];
-
         DB::table('sections')->insert($data);
     }
 }
