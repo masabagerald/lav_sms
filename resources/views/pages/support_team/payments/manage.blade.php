@@ -55,7 +55,7 @@
                     @foreach($students as $s)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $s->user->name }}</td>
+                            <td>{{ $s->user->name ?? '' }}</td>
                             <td>{{ $s->adm_no }}</td>
                              <td>{{ $s->fees }}</td>
                             <td>
