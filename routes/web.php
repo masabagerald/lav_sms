@@ -6,6 +6,11 @@ Auth::routes();
 Route::get('/privacy-policy', 'HomeController@privacy_policy')->name('privacy_policy');
 Route::get('/terms-of-use', 'HomeController@terms_of_use')->name('terms_of_use');
 
+Route::get('/license/upload', 'LicenseController@show')->name('license.upload');
+Route::post('/license/upload', 'LicenseController@upload')->name('license.upload.post');
+Route::post('/license/delete', 'LicenseController@delete')->name('license.delete');
+Route::post('/license/key/upload', 'LicenseController@uploadKey')->name('license.key.upload');
+
 
 Route::group(['middleware' => 'auth'], function () {
 

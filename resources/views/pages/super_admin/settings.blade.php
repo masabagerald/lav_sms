@@ -11,7 +11,9 @@
         <div class="card-body">
             <form enctype="multipart/form-data" method="post" action="{{ route('settings.update') }}">
                 @csrf @method('PUT')
-            <div class="row">
+                
+
+         <div class="row">
                 <div class="col-md-6 border-right-2 border-right-blue-400">
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label font-weight-semibold">Name of School <span class="text-danger">*</span></label>
