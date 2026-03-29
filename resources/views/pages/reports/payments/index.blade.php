@@ -122,9 +122,9 @@
                                 <td>{{ $record->student->name ?? 'N/A' }}</td>
                                 <td>{{ $record->student->student_record->guardian_name?? 'N/A' }}</td>
                             
-                                <td>{{ $record->student->student_record->guardian_phone ?? $record->student->student_record->user->phone }}</td>
-                                <td>{{ $record->student->Student_record->class_section }}</td>
-                                <td>{{ $record->student->Student_record->adm_no }}</td>
+                                <td>{{ $record->student->student_record->guardian_phone ?? $record->student->student_record->user->phone ??''}}</td>
+                                <td>{{ $record->student->Student_record->class_section ?? "s" }}</td>
+                                <td>{{ $record->student->Student_record->adm_no ?? '' }}</td>
                                   <td>{{ $record->payment->title ?? ''}}</td>
                                 <td>{{ $record->ref_no }}</td>
                                 <td class="text-end fw-semibold text-success">{{ number_format($record->amt_paid, 2) }}</td>

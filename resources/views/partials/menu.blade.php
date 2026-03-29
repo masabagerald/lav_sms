@@ -82,6 +82,9 @@
                                         Student Payments
                                     </a>
                                 </li>
+                                 <li class="nav-item"><a href="{{ route('students.payments') }}" class="nav-link">All Students Payment Report</a></li>
+
+                                 <li class="nav-item"><a href="{{ route('reports.index') }}" class="nav-link">Confirmed Payments(Full/Partial)</a></li>
                             @endif
                         </ul>
                     </li>
