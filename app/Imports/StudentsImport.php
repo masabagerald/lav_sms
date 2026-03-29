@@ -79,6 +79,7 @@ protected function processRow($row): void
     if ($oldRegNo !== '' && StudentRecord::where('old_reg_no', $oldRegNo)->exists()) {
         $this->duplicates++;
         $this->skipped++;
+        Log::warning("Duplicate skipped: old_reg_no={$oldRegNo}");
         return;
     }
 
