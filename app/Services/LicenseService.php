@@ -3,59 +3,78 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Exception;
 
 class LicenseService
 {
     protected $publicKey;
+   
+    protected $disk = 'public';
+    protected $keyPath = 'license/public.pem';
+    protected $licensePath = 'license/license.json';
 
     public function __construct()
     {
+        $this->loadPublicKey();
+    }
 
-        $this->publicKey = null;
-
-        $path = storage_path('app/license/public.pem');
-
-        if (file_exists($path)) {
-            $keyContent = file_get_contents($path);
-
-            if ($keyContent) {
-                $this->publicKey = openssl_pkey_get_public($keyContent);
+    protected function loadPublicKey()
+    {
+        try {
+            if (!Storage::disk($this->disk)->exists($this->keyPath)) {
+                Log::warning('Public key file not found', [
+                    'path' => $this->keyPath,
+                    'full_path' => storage_path('app/' . $this->keyPath)
+                ]);
+                return;
             }
-        }
-   
 
-       
+            $keyContent = Storage::disk($this->disk)->get($this->keyPath);
+
+            if (!$keyContent) {
+                Log::warning('Public key file is empty');
+                return;
+            }
+
+            $this->publicKey = openssl_pkey_get_public($keyContent);
+
+            if (!$this->publicKey) {
+                Log::error('Invalid public key format');
+            }
+
+        } catch (Exception $e) {
+            Log::error('Failed to load public key', [
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 
     public function validate()
     {
         try {
-            $path = storage_path('app/license/license.json');
-
+            // 🔴 Check key first
             if (!$this->publicKey) {
                 return $this->fail('KEY_MISSING');
             }
 
-            // 1. Check file existence
-            if (!file_exists($path)) {
+            // 🔴 Check license file
+            if (!Storage::disk($this->disk)->exists($this->licensePath)) {
                 return $this->fail('LICENSE_MISSING');
             }
 
-            $raw = file_get_contents($path);
+            $raw = Storage::disk($this->disk)->get($this->licensePath);
 
             if (!$raw) {
                 return $this->fail('LICENSE_UNREADABLE');
             }
 
-            // 2. Decode JSON
+            // ✅ Decode JSON
             $license = json_decode($raw, true);
-
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return $this->fail('INVALID_JSON');
             }
 
-            // 3. Validate structure
             if (!isset($license['data'], $license['signature'])) {
                 return $this->fail('INVALID_STRUCTURE');
             }
@@ -67,7 +86,7 @@ class LicenseService
                 return $this->fail('INVALID_SIGNATURE_ENCODING');
             }
 
-            // 4. Verify signature (CRITICAL SECURITY STEP)
+            // 🔐 Verify signature
             $verified = openssl_verify(
                 $data,
                 $signature,
@@ -79,41 +98,33 @@ class LicenseService
                 return $this->fail('SIGNATURE_FAILED');
             }
 
-            // 5. Decode base64 payload (NO AES anymore)
+            // ✅ Decode payload
             $decoded = base64_decode($data, true);
-
             if ($decoded === false) {
                 return $this->fail('INVALID_DATA_ENCODING');
             }
 
             $payload = json_decode($decoded, true);
-
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return $this->fail('INVALID_PAYLOAD');
             }
 
-            // 6. Validate required fields
-            $allowedDomains = [$payload['domain'], '127.0.0.1', 'localhost'];
- 
-            if (!in_array(request()->getHost(), $allowedDomains)) {
-                return $this->fail('INVALID_DOMAIN');
-            } 
-
-            // 7. Expiry check
-            if (now()->gt($payload['expires_at'])) {
-                return $this->fail('EXPIRED');
+            // ✅ Required fields check
+            if (!isset($payload['domain'], $payload['expires_at'])) {
+                return $this->fail('INCOMPLETE_PAYLOAD');
             }
 
-            // 8. Domain check
-
-            if (app()->environment('local')) {
-                // skip domain check
-            } else {
+            // 🌍 Domain validation
+            if (!app()->environment('local')) {
                 if ($payload['domain'] !== request()->getHost()) {
                     return $this->fail('INVALID_DOMAIN');
                 }
             }
-           
+
+            // ⏳ Expiry check
+            if (now()->gt($payload['expires_at'])) {
+                return $this->fail('EXPIRED');
+            }
 
             return [
                 'valid' => true,
@@ -133,6 +144,7 @@ class LicenseService
     protected function fail($code)
     {
         $messages = [
+            'KEY_MISSING' => 'Public key not found. Please upload your public key.',
             'LICENSE_MISSING' => 'License not found. Please upload a valid license file.',
             'LICENSE_UNREADABLE' => 'Unable to read license file.',
             'INVALID_JSON' => 'License file is corrupted.',
@@ -148,29 +160,13 @@ class LicenseService
         ];
 
         Log::warning('License check failed', [
-            'code' => $code,
-            'internal_message' => $this->getInternalMessage($code)
+            'code' => $code
         ]);
 
         return [
             'valid' => false,
             'code' => $code,
-            'message' => isset($messages[$code]) ? $messages[$code] : 'License error occurred'
+            'message' => $messages[$code] ?? 'License error occurred'
         ];
-    }
-
-    protected function getInternalMessage($code)
-    {
-        $map = [
-            'LICENSE_MISSING' => 'License file not found in storage',
-            'LICENSE_UNREADABLE' => 'file_get_contents failed',
-            'INVALID_JSON' => 'json_decode error',
-            'SIGNATURE_FAILED' => 'openssl_verify returned != 1',
-            'INVALID_DATA_ENCODING' => 'base64_decode failed',
-            'INVALID_PAYLOAD' => 'decoded JSON invalid',
-            'KEY_MISSING' => 'Public key not found. Please upload your public key.',
-        ];
-
-        return isset($map[$code]) ? $map[$code] : 'Unknown license validation error';
     }
 }

@@ -7,54 +7,84 @@ use Illuminate\Support\Facades\Storage;
 
 class LicenseController extends Controller
 {
+    protected $disk = 'public';
+    protected $licensePath = 'license/license.json';
+    protected $keyPath = 'license/public.pem';
+
     public function show()
     {
-
-    
         return view('pages.super_admin.license.upload');
     }
 
-   public function upload(Request $request)
-{
-    $request->validate([
-        'license' => 'required|file'
-    ]);
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'license' => 'required|file|mimes:json'
+        ]);
 
-    // Ensure directory exists
-    Storage::makeDirectory('license');
+        $disk = Storage::disk($this->disk);
 
-    // Store file
-    Storage::put('license/license.json', file_get_contents($request->file('license')));
+        // Ensure directory exists
+        if (!$disk->exists('license')) {
+            $disk->makeDirectory('license');
+        }
 
-    return redirect('/')->with('success', 'License uploaded successfully');
-}
+        $content = file_get_contents($request->file('license'));
 
+        // Optional: validate JSON
+        json_decode($content);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return back()->with('error', 'Invalid JSON file');
+        }
 
-public function uploadKey(Request $request)
-{
-    $request->validate([
-        'key' => 'required|file'
-    ]);
+        $disk->put($this->licensePath, $content);
 
-    Storage::makeDirectory('license');    
+        // 🔥 clear cache (IMPORTANT)
+        cache()->forget('license.validation');
 
-    Storage::put('license/public.pem', file_get_contents($request->file('key')));
-
-    return back()->with('success', 'Public key uploaded');
-}
-
-public function delete(Request $request)
-{
-    $type = $request->type;
-
-    if ($type === 'license') {
-        @unlink(storage_path('app/license/license.json'));
+        return redirect('/')->with('success', 'License uploaded successfully');
     }
 
-    if ($type === 'key') {
-        @unlink(storage_path('app/license/public.pem'));
+    public function uploadKey(Request $request)
+    {
+        $request->validate([
+            'key' => 'required|file'
+        ]);
+
+        $disk = Storage::disk($this->disk);
+
+        if (!$disk->exists('license')) {
+            $disk->makeDirectory('license');
+        }
+
+        $disk->put($this->keyPath, file_get_contents($request->file('key')));
+
+        // 🔥 clear cache
+        cache()->forget('license.validation');
+
+        return back()->with('success', 'Public key uploaded');
     }
 
-    return back()->with('success', ucfirst($type) . ' deleted');
-}
+    public function delete(Request $request)
+    {
+        $type = $request->type;
+        $disk = Storage::disk($this->disk);
+
+        if ($type === 'license') {
+            if ($disk->exists($this->licensePath)) {
+                $disk->delete($this->licensePath);
+            }
+        }
+
+        if ($type === 'key') {
+            if ($disk->exists($this->keyPath)) {
+                $disk->delete($this->keyPath);
+            }
+        }
+
+        // 🔥 clear cache
+        cache()->forget('license.validation');
+
+        return back()->with('success', ucfirst($type) . ' deleted');
+    }
 }

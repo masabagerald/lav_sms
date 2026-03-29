@@ -22,25 +22,25 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            @php
-                $licensePath = storage_path('app/license/license.json');
-                $keyPath = storage_path('app/license/public.pem');
+           @php
+                use Illuminate\Support\Facades\Storage;
 
-                $licenseExists = file_exists($licensePath);
-                $keyExists = file_exists($keyPath);
+                $disk = Storage::disk('public');
+
+                $licenseExists = $disk->exists('license/license.json');
+                $keyExists = $disk->exists('license/public.pem');
 
                 $licenseData = null;
 
-                if($licenseExists){
+                if ($licenseExists && $keyExists) {
                     try {
                         $service = app(\App\Services\LicenseService::class)->validate();
-                        if($service['valid']){
+                        if ($service['valid']) {
                             $licenseData = $service['data'];
                         }
                     } catch (\Exception $e) {}
                 }
             @endphp
-
             {{-- CURRENT STATUS --}}
             <div class="mb-4">
                 <h5>Current Status</h5>
