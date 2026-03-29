@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class LicenseController extends Controller
 {
@@ -13,28 +14,31 @@ class LicenseController extends Controller
         return view('pages.super_admin.license.upload');
     }
 
-    public function upload(Request $request)
-    {
-        $request->validate([
-            'license' => 'required|file'
-        ]);
+   public function upload(Request $request)
+{
+    $request->validate([
+        'license' => 'required|file'
+    ]);
 
-        $path = storage_path('app/license/license.json');
+    // Ensure directory exists
+    Storage::makeDirectory('license');
 
-        file_put_contents($path, file_get_contents($request->file('license')));
+    // Store file
+    Storage::put('license/license.json', file_get_contents($request->file('license')));
 
-        return redirect('/')->with('success', 'License uploaded successfully');
-    }
+    return redirect('/')->with('success', 'License uploaded successfully');
+}
 
-    public function uploadKey(Request $request)
+
+public function uploadKey(Request $request)
 {
     $request->validate([
         'key' => 'required|file'
     ]);
 
-    $path = storage_path('app/license/public.pem');
+    Storage::makeDirectory('license');    
 
-    file_put_contents($path, file_get_contents($request->file('key')));
+    Storage::put('license/public.pem', file_get_contents($request->file('key')));
 
     return back()->with('success', 'Public key uploaded');
 }
