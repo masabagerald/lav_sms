@@ -24,9 +24,9 @@ class CheckLicense
         }
 
         // ✅ 2. Optional: Skip in local environment
-        if (app()->environment('local')) {
+      /*   if (app()->environment('local')) {
             return $next($request);
-        }
+        } */
 
         // ✅ 3. Cache result (avoid heavy validation on every request)
         $result = cache()->remember('license.validation', now()->addMinutes(5), function () {
