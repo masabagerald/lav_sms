@@ -252,7 +252,7 @@
                     <div class="col-md-6">
                         <label>Fees (per term):</label>
                         <input type="text" name="fees" class="form-control"
-                               value="{{ old('fees') }}" placeholder="Fees per term">
+                               value="{{ old('fees') }}" placeholder="Fees per term" required>
                     </div>
                 </div>
 

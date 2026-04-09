@@ -70,21 +70,21 @@ public function store(StudentRecordCreate $req)
     $data = $req->only(Qs::getUserRecord());
     $sr   = $req->only(Qs::getStudentData());
 
-    $ct = $this->my_class->findTypeByClass($req->my_class_id)->code;
-
-    $data['user_type'] = 'student';
-    $data['name']      = ucwords($req->name);
-    $data['code']      = strtoupper(Str::random(10));
-    $data['password'] = Hash::make('student');
-    $data['photo']    = Qs::getDefaultUserImage();
-    $data['guardian_phone']    = $req->phone;
-
-
+    $ct   = $this->my_class->findTypeByClass($req->my_class_id)->code;
     $year = $sr['year_admitted'];
 
+    // ── User fields ──────────────────────────────────────────
+    $data['user_type']      = 'student';
+    $data['name']           = ucwords($req->name);
+    $data['code']           = strtoupper(Str::random(10));
+    $data['password']       = Hash::make('student');
+    $data['photo']          = Qs::getDefaultUserImage();
+    $data['guardian_phone'] = $req->phone;
+
+    // ── Handle photo upload ───────────────────────────────────
     if ($req->hasFile('photo')) {
         $photo = $req->file('photo');
-        $f = Qs::getFileMetaData($photo);
+        $f     = Qs::getFileMetaData($photo);
         $f['name'] = 'photo.' . $f['ext'];
         $f['path'] = $photo->storeAs(
             Qs::getUploadPath('student') . $data['code'],
@@ -93,44 +93,23 @@ public function store(StudentRecordCreate $req)
         $data['photo'] = asset('storage/' . $f['path']);
     }
 
-    $maxRetries = 5;
-    $attempts   = 0;
+    // ── Step 1: Generate unique admission number OUTSIDE transaction ──
+    $data['username'] = AdminNoHelper::generateAdmissionNo($ct, $year);
 
-    do {
-        try {
-            DB::transaction(function () use (&$data, &$sr, $ct, $year) {
+    // ── Step 2: Single atomic transaction ─────────────────────
+    DB::transaction(function () use (&$data, &$sr) {
 
-                // 🔁 regenerate every retry
-                $data['username'] = AdminNoHelper::generateAdmissionNo($ct, $year);
+        $user = $this->user->create($data);
 
-                $user = $this->user->create($data);
+        $sr['adm_no']  = $data['username'];
+        $sr['user_id'] = $user->id;
+        $sr['session'] = Qs::getSetting('current_session');
 
-                $sr['adm_no']  = $data['username'];
-                $sr['user_id'] = $user->id;
-                $sr['session'] = Qs::getSetting('current_session');
-
-                $this->student->createRecord($sr);
-            });
-
-            // ✅ success → exit loop
-            break;
-
-        } catch (QueryException $e) {
-
-            // MySQL duplicate key error
-            if ($e->errorInfo[1] === 1062 && ++$attempts < $maxRetries) {
-                usleep(100000); // 100ms backoff
-                continue;
-            }
-
-            throw $e;
-        }
-
-    } while ($attempts < $maxRetries);
+        $this->student->createRecord($sr);
+    });
 
     return Qs::jsonStoreOk();
 }
-
 
     public function listByClass($class_id)
     {
