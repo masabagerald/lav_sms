@@ -1,123 +1,273 @@
-## **Laravel School Management System** 
+# Laravel School Management System (LAVSMS)
 
-**LAVSMS** is developed for educational institutions like schools and colleges built on Laravel 8
+LAVSMS is a comprehensive School Management System built with Laravel 8 for schools, colleges, and other educational institutions. The system provides role-based access control, student information management, examination management, fee tracking, library management, and academic reporting.
 
-**SCREENSHOTS** 
+## Features
 
-**Dashboard**
-<img src="https://i.ibb.co/D4T0z6T/dashboard.png" alt="dashboard" border="0">
+### Dashboard
 
-**Login**
-<img src="https://i.ibb.co/Rh1Bfwk/login.png" alt="login" border="0">
+<img src="https://i.ibb.co/D4T0z6T/dashboard.png" alt="Dashboard">
 
-**Student Marksheet**
-<img src="https://i.ibb.co/GCgv5ZR/marksheet.png" alt="marksheet" border="0">
+### Login
 
-**System Settings**
-<img src="https://i.ibb.co/Kmrhw69/system-settings.png" alt="system-settings" border="0">
+<img src="https://i.ibb.co/Rh1Bfwk/login.png" alt="Login">
 
-**Print Marksheet**
-<div style="clear: both"> </div>
-<img src="https://i.ibb.co/5c1GHCj/capture-20210530-115521-crop.png" alt="print-marksheet">
+### Student Marksheet
 
-**Print Tabulation Sheet & Marksheet**
-<img src="https://i.ibb.co/QmscPfn/capture-20210530-115802.png" alt="tabulation-sheet" border="0">
+<img src="https://i.ibb.co/GCgv5ZR/marksheet.png" alt="Student Marksheet">
 
-<hr />  
+### System Settings
 
-There are 7 types of user accounts. They include:
- 
-Administrators (Super Admin & Admin)
-- Librarian
-- Accountant
-- Teacher
-- Student
-- Parent
+<img src="https://i.ibb.co/Kmrhw69/system-settings.png" alt="System Settings">
 
-**Requirements** 
+### Print Marksheet
 
-Check Laravel 8 Requirements https://laravel.com/docs/8.x
+<img src="https://i.ibb.co/5c1GHCj/capture-20210530-115521-crop.png" alt="Print Marksheet">
 
-**Installation**
-- Install dependencies (composer install)
-- Set Database Credentials & App Settings in dotenv file (.env)
-- Migrate Database (php artisan migrate)
-- Database seed (php artisan db:seed)
+### Print Tabulation Sheet
 
-**Login Credentials**
-After seeding. Login details as follows:
+<img src="https://i.ibb.co/QmscPfn/capture-20210530-115802.png" alt="Tabulation Sheet">
 
-| Account Type  | Username | Email | Password |
-| ------------- | -------- | ----- | -------- |
-| Super Admin | cj | cj@cj.com | cj |
-|  Admin | admin | admin@admin.com | cj |
-|  Teacher | teacher | teacher@teacher.com | cj |
-|  Parent | parent | parent@parent.com | cj |
-|  Accountant | accountant | accountant@accountant.com | cj |
-|  Student | student | student@student.com | cj |
+---
 
-#### **FUNCTIONS OF ACCOUNTS** 
+## User Roles
 
-**-- SUPER ADMIN**
-- Only Super Admin can delete any record
-- Create any user account
- 
-**-- Administrators (Super Admin & Admin)**
+The system supports seven user roles:
 
-- Manage students class/sections
-- View marksheet of students
-- Create, Edit and manage all user accounts & profiles
-- Create, Edit and manage Exams & Grades
-- Create, Edit and manage Subjects
-- Manage noticeboard of school
-- Notices are visible in calendar in dashboard
-- Edit system settings
-- Manage Payments & fees
+* Super Administrator
+* Administrator
+* Teacher
+* Student
+* Parent
+* Accountant
+* Librarian
 
-**-- ACCOUNTANT**
-- Manage Payments & fees
-- Print Payment Receipts
+---
 
-**-- LIBRARIAN**
-- Manage Books in the Library
+## System Requirements
 
-**-- TEACHER**
-- Manage Own Class/Section
-- Manage Exam Records for own Subjects
-- Manage Timetable if Assigned as Class Teacher
-- Manage own profile
-- Upload Study Materials
+### Traditional Installation
 
-**-- STUDENT**
-- View teacher profile
-- View own class subjects
-- View own marks and class timetable
-- View Payments
-- View library and book status
-- View noticeboard and school events in calendar
-- Manage own profile
+* PHP 7.4 or later
+* Composer
+* MySQL / PostgreSQL
+* Node.js & NPM (optional for frontend assets)
 
-**-- PARENT**
-- View teacher profile
-- View own child's marksheet (Download/Print PDF)
-- View own child's Timetable
-- View own child's payments
-- View noticeboard and school events in calendar
-- Manage own profile
+### Docker Installation
 
-### **Contributing**
+* Docker
+* Docker Compose
 
-Your Contributions & suggestions are welcomed. Please use Pull Request
+---
 
-### **Security Vulnerabilities**
+# Quick Start with Docker
 
-If you discover a security vulnerability within LAV_SMS, please send an e-mail to CJ Inspired via cjay.pub@gmail.com. All security vulnerabilities will be promptly addressed.
+## 1. Clone the Repository
 
-***Please Note*** that some sections of this project are in the work-in-progress stage and would be updated soon. These include:
+```bash
+git clone https://github.com/yourusername/lavsms.git
+cd lavsms
+```
 
-- The Noticeboard/Calendar in the Dashboard Area
-- Librarian/Acountant user pages
-- Library Resources/Study Materials Upload for Students
+## 2. Configure Environment
 
-### **Contact [CJ INSPIRED]**
-- Phone : +2347068149559
+```bash
+cp .env.example .env
+```
+
+Update database settings in `.env`.
+
+## 3. Build and Start Containers
+
+```bash
+docker compose up --build -d
+```
+
+## 4. Install Dependencies
+
+```bash
+docker compose exec app composer install
+```
+
+## 5. Generate Application Key
+
+```bash
+docker compose exec app php artisan key:generate
+```
+
+## 6. Run Database Migrations
+
+```bash
+docker compose exec app php artisan migrate
+```
+
+## 7. Seed Demo Data
+
+```bash
+docker compose exec app php artisan db:seed
+```
+
+## 8. Fix Storage Permissions
+
+```bash
+docker compose exec app chown -R www-data:www-data storage bootstrap/cache
+docker compose exec app chmod -R 775 storage bootstrap/cache
+```
+
+## 9. Access the Application
+
+```text
+http://localhost:8000
+```
+
+---
+
+# Manual Installation
+
+## Install Dependencies
+
+```bash
+composer install
+```
+
+## Configure Environment
+
+```bash
+cp .env.example .env
+```
+
+Update your database credentials in the `.env` file.
+
+## Generate Application Key
+
+```bash
+php artisan key:generate
+```
+
+## Run Migrations
+
+```bash
+php artisan migrate
+```
+
+## Seed Database
+
+```bash
+php artisan db:seed
+```
+
+## Start Development Server
+
+```bash
+php artisan serve
+```
+
+---
+
+# Demo Login Credentials
+
+After running the database seeders, use the following credentials:
+
+| Role        | Username   | Email                                                         | Password |
+| ----------- | ---------- | ------------------------------------------------------------- | -------- |
+| Super Admin | cj         | [cj@cj.com](mailto:cj@cj.com)                                 | cj       |
+| Admin       | admin      | [admin@admin.com](mailto:admin@admin.com)                     | cj       |
+| Teacher     | teacher    | [teacher@teacher.com](mailto:teacher@teacher.com)             | cj       |
+| Parent      | parent     | [parent@parent.com](mailto:parent@parent.com)                 | cj       |
+| Accountant  | accountant | [accountant@accountant.com](mailto:accountant@accountant.com) | cj       |
+| Student     | student    | [student@student.com](mailto:student@student.com)             | cj       |
+
+---
+
+# Role Capabilities
+
+## Super Administrator
+
+* Create all user accounts
+* Manage all system settings
+* Delete any record in the system
+
+## Administrators
+
+* Manage students, classes, and sections
+* Manage examinations and grading
+* Manage subjects
+* Manage user accounts
+* Manage school notices and events
+* Manage fee structures and payments
+
+## Teachers
+
+* Manage assigned classes and subjects
+* Enter and update student results
+* Manage timetables
+* Upload learning materials
+* Update personal profile
+
+## Students
+
+* View academic results
+* Access class timetable
+* View fee payment status
+* Access learning materials
+* Manage personal profile
+
+## Parents
+
+* Monitor student performance
+* View and print report cards
+* View fee payment records
+* Track class timetable
+* Manage personal profile
+
+## Accountants
+
+* Manage fees and payments
+* Generate payment receipts
+* Track financial transactions
+
+## Librarians
+
+* Manage library inventory
+* Issue and receive books
+* Track borrowing history
+
+---
+
+# Contributing
+
+Contributions, feature requests, and bug reports are welcome.
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Submit a Pull Request
+
+---
+
+# Security
+
+If you discover a security vulnerability, please contact the maintainer directly instead of creating a public issue.
+
+---
+
+# Roadmap
+
+The following modules are currently being improved:
+
+* Noticeboard and Calendar
+* Library Management
+* Study Materials Management
+* Accountant Dashboard
+* Librarian Dashboard
+
+---
+
+# License
+
+This project is open-source and available under the MIT License.
+
+---
+
+# Author
+
