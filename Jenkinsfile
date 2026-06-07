@@ -41,7 +41,9 @@ pipeline {
                 sh '''
                     docker compose down || true
                     docker compose up -d
+
                     sleep 15
+
                     docker compose ps
                 '''
             }
@@ -59,6 +61,20 @@ pipeline {
             }
         }
 
+        stage('Create Env') {
+            steps {
+                sh '''
+                    docker compose exec -T app sh -c '
+                        if [ ! -f .env ]; then
+                            cp .env.example .env
+                        fi
+                    '
+
+                    docker compose exec -T app php artisan key:generate --force
+                '''
+            }
+        }
+
         stage('Prepare Laravel') {
             steps {
                 sh '''
@@ -68,18 +84,39 @@ pipeline {
             }
         }
 
-      /*   stage('Run Tests') {
+        /*
+        stage('Run Tests') {
             steps {
                 sh '''
                     docker compose exec -T app php artisan test
                 '''
             }
         }
- */
+        */
+
+        stage('Verify Application') {
+            steps {
+                sh '''
+                    docker compose exec -T app php artisan migrate --force
+                    docker compose exec -T app php artisan config:clear
+                    docker compose exec -T app php artisan route:clear
+                    docker compose exec -T app php artisan view:clear
+                '''
+            }
+        }
+
         stage('Verify Docker Image') {
             steps {
                 sh '''
                     docker images | grep ${IMAGE_NAME}
+                '''
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                sh '''
+                    curl -I http://localhost:9000 || true
                 '''
             }
         }
@@ -91,7 +128,6 @@ pipeline {
                 docker compose logs app || true
                 docker compose logs nginx || true
                 docker compose logs postgres || true
-                docker compose down || true
             '''
         }
     }
