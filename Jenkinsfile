@@ -19,10 +19,15 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+        stage('Start Environment') {
             steps {
                 sh 'docker compose up -d'
-                sh 'sleep 10'
+                sh 'sleep 15'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
                 sh 'docker compose exec -T app php artisan test'
             }
         }
