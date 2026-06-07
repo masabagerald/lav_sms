@@ -21,14 +21,22 @@ pipeline {
 
         stage('Run Tests') {
             steps {
-                sh 'docker compose up -d postgres'
+                sh 'docker compose up -d'
+                sh 'sleep 10'
                 sh 'docker compose exec -T app php artisan test'
             }
         }
+
         stage('Verify Docker Image') {
             steps {
                 sh 'docker images | grep ${IMAGE_NAME}'
             }
+        }
+    }
+
+    post {
+        always {
+            sh 'docker compose down || true'
         }
     }
 }
