@@ -7,11 +7,11 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+       /*  stage('Checkout') {
             steps {
                 checkout scm
             }
-        }
+        } */
 
         stage('Build Docker Image') {
             steps {
