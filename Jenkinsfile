@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "lavsms"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -9,39 +13,36 @@ pipeline {
             }
         }
 
-        stage('Show Files') {
+        stage('Show Workspace') {
             steps {
                 sh 'pwd'
                 sh 'ls -la'
             }
         }
 
-        stage('Docker Check') {
+        stage('Build Docker Image') {
             steps {
-                sh 'docker ps'
-            }
-        }
-
-        stage('Build Image') {
-            steps {
-                sh 'docker build -t lavsms:${BUILD_NUMBER} .'
+                sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
             }
         }
 
         stage('Verify Image') {
             steps {
-                sh 'docker images | grep lavsms'
+                sh 'docker images | grep ${IMAGE_NAME}'
             }
         }
+
     }
 
     post {
+
         success {
-            echo 'Pipeline completed successfully!'
+            echo "Build completed successfully!"
         }
 
         failure {
-            echo 'Pipeline failed!'
+            echo "Build failed!"
         }
+
     }
 }
