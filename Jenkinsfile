@@ -36,9 +36,10 @@ pipeline {
         stage('Inspect Nginx Config') {
             steps {
                 sh '''
-                    file docker/nginx/default.conf
+                    ls -l docker/nginx/default.conf
                     cat docker/nginx/default.conf
                 '''
+            
             }
         }
 
