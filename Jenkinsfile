@@ -13,33 +13,22 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh 'php artisan test'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
             }
         }
 
+        stage('Run Tests') {
+            steps {
+                sh 'docker compose up -d postgres'
+                sh 'docker compose exec -T app php artisan test'
+            }
+        }
         stage('Verify Docker Image') {
             steps {
                 sh 'docker images | grep ${IMAGE_NAME}'
             }
-        }
-    }
-
-    post {
-
-        success {
-            echo "Build ${BUILD_NUMBER} completed successfully"
-        }
-
-        failure {
-            echo "Build ${BUILD_NUMBER} failed"
         }
     }
 }
