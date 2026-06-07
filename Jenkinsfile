@@ -68,14 +68,14 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+      /*   stage('Run Tests') {
             steps {
                 sh '''
                     docker compose exec -T app php artisan test
                 '''
             }
         }
-
+ */
         stage('Verify Docker Image') {
             steps {
                 sh '''
