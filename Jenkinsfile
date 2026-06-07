@@ -26,7 +26,7 @@ pipeline {
             }
         }
 
-        stage('Verify Image') {
+        stage('Verify Docker Image') {
             steps {
                 sh 'docker images | grep ${IMAGE_NAME}'
             }
@@ -35,14 +35,12 @@ pipeline {
     }
 
     post {
-
         success {
-            echo "Build completed successfully!"
+            echo "Build ${BUILD_NUMBER} completed successfully"
         }
 
         failure {
-            echo "Build failed!"
+            echo "Build ${BUILD_NUMBER} failed"
         }
-
     }
 }
