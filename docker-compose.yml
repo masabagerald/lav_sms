@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
 
   # app:
   #   build:
-  #     context: .
+  #     context: .docker rm -f laravel_postgres laravel_app laravel_nginx
   #     dockerfile: Dockerfile
   #   container_name: laravel_app
   #   volumes:
@@ -14,7 +12,7 @@ services:
 
   app:
     image: lavsms:latest
-    container_name: laravel_app
+    # container_name: laravel_app
     volumes:
       - .:/var/www:z
     depends_on:
@@ -22,7 +20,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: laravel_nginx
+    # container_name: laravel_nginx
     ports:
       - "8000:80"
     volumes:
@@ -33,7 +31,7 @@ services:
 
   postgres:
     image: postgres:14
-    container_name: laravel_postgres
+    # container_name: laravel_postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: laravel
