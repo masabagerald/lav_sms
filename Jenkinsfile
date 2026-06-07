@@ -42,6 +42,15 @@ pipeline {
             
             }
         }
+        stage('Inspect App') {
+            steps {
+                sh '''
+                    docker compose exec -T app pwd
+                    docker compose exec -T app ls -la
+                    docker compose exec -T app ls -la /var/www
+                '''
+            }
+        }
 
         stage('Start Environment') {
             steps {
