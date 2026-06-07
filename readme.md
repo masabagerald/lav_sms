@@ -1,8 +1,71 @@
-# Laravel School Management System (LAVSMS)
+# 🎓 Laravel School Management System (LAVSMS)
 
-LAVSMS is a comprehensive School Management System built with Laravel 8 for schools, colleges, and other educational institutions. The system provides role-based access control, student information management, examination management, fee tracking, library management, and academic reporting.
+![Laravel](https://img.shields.io/badge/Laravel-8.x-FF2D20?logo=laravel)
+![PHP](https://img.shields.io/badge/PHP-7.4+-777BB4?logo=php)
+![Docker](https://img.shields.io/badge/Docker-Supported-2496ED?logo=docker)
+![License](https://img.shields.io/badge/License-MIT-green)
+![CI/CD](https://img.shields.io/badge/Jenkins-CI%2FCD-D24939?logo=jenkins)
 
-## Features
+A modern and comprehensive School Management System built with Laravel 8 for schools, colleges, and educational institutions.
+
+LAVSMS simplifies academic administration through role-based access control, student management, examinations, fee tracking, library management, reporting, and school communication tools.
+
+---
+
+## ✨ Key Features
+
+### Academic Management
+
+* Student enrollment and management
+* Class and section management
+* Subject management
+* Examination and grading system
+* Marksheet generation and printing
+* Tabulation sheet generation
+
+### User Management
+
+* Multi-role authentication and authorization
+* User profile management
+* Parent-student relationships
+* Teacher assignments
+
+### Financial Management
+
+* Student fee management
+* Payment tracking
+* Receipt generation
+* Financial reporting
+
+### Library Management
+
+* Book catalog management
+* Book issuance and returns
+* Borrowing history tracking
+
+### Communication
+
+* School noticeboard
+* Academic announcements
+* Calendar and event management
+
+---
+
+## 👥 Supported User Roles
+
+| Role                | Description           |
+| ------------------- | --------------------- |
+| Super Administrator | Full system control   |
+| Administrator       | School administration |
+| Teacher             | Academic management   |
+| Student             | Academic access       |
+| Parent              | Student monitoring    |
+| Accountant          | Financial management  |
+| Librarian           | Library operations    |
+
+---
+
+## 🖼 Screenshots
 
 ### Dashboard
 
@@ -24,97 +87,87 @@ LAVSMS is a comprehensive School Management System built with Laravel 8 for scho
 
 <img src="https://i.ibb.co/5c1GHCj/capture-20210530-115521-crop.png" alt="Print Marksheet">
 
-### Print Tabulation Sheet
+### Tabulation Sheet
 
 <img src="https://i.ibb.co/QmscPfn/capture-20210530-115802.png" alt="Tabulation Sheet">
 
 ---
 
-## User Roles
+## 🏗 System Architecture
 
-The system supports seven user roles:
-
-* Super Administrator
-* Administrator
-* Teacher
-* Student
-* Parent
-* Accountant
-* Librarian
-
----
-
-## System Requirements
-
-### Traditional Installation
-
-* PHP 7.4 or later
-* Composer
-* MySQL / PostgreSQL
-* Node.js & NPM (optional for frontend assets)
-
-### Docker Installation
-
-* Docker
-* Docker Compose
-
----
-
-# Quick Start with Docker
-
-## 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/lavsms.git
-cd lavsms
+```text
+Browser
+   │
+   ▼
+Laravel Application
+   │
+   ├── Authentication & Authorization
+   ├── Academic Management
+   ├── Financial Management
+   ├── Library Management
+   └── Reporting Module
+   │
+   ▼
+MySQL / PostgreSQL
 ```
 
-## 2. Configure Environment
+---
+
+## 🚀 Quick Start (Docker Recommended)
+
+### Clone Repository
+
+```bash
+git clone https://github.com/masabagerald/lav_sms.git
+cd lav_sms
+```
+
+### Configure Environment
 
 ```bash
 cp .env.example .env
 ```
 
-Update database settings in `.env`.
+Update database credentials and application settings.
 
-## 3. Build and Start Containers
+### Start Containers
 
 ```bash
 docker compose up --build -d
 ```
 
-## 4. Install Dependencies
+### Install Dependencies
 
 ```bash
 docker compose exec app composer install
 ```
 
-## 5. Generate Application Key
+### Generate Application Key
 
 ```bash
 docker compose exec app php artisan key:generate
 ```
 
-## 6. Run Database Migrations
+### Run Database Migrations
 
 ```bash
 docker compose exec app php artisan migrate
 ```
 
-## 7. Seed Demo Data
+### Seed Demo Data
 
 ```bash
 docker compose exec app php artisan db:seed
 ```
 
-## 8. Fix Storage Permissions
+### Fix Permissions
 
 ```bash
 docker compose exec app chown -R www-data:www-data storage bootstrap/cache
 docker compose exec app chmod -R 775 storage bootstrap/cache
 ```
 
-## 9. Access the Application
+### Access Application
 
 ```text
 http://localhost:8000
@@ -122,152 +175,83 @@ http://localhost:8000
 
 ---
 
-# Manual Installation
+## 🔄 CI/CD with Jenkins
 
-## Install Dependencies
+The project supports automated CI/CD pipelines using Jenkins and Docker.
 
-```bash
-composer install
+Typical workflow:
+
+```text
+GitHub
+   ↓
+Jenkins Pipeline
+   ↓
+Build Docker Image
+   ↓
+Run Tests
+   ↓
+Deploy Application
 ```
 
-## Configure Environment
-
-```bash
-cp .env.example .env
-```
-
-Update your database credentials in the `.env` file.
-
-## Generate Application Key
-
-```bash
-php artisan key:generate
-```
-
-## Run Migrations
-
-```bash
-php artisan migrate
-```
-
-## Seed Database
-
-```bash
-php artisan db:seed
-```
-
-## Start Development Server
-
-```bash
-php artisan serve
-```
+Pipeline configuration is maintained using a Jenkinsfile (Pipeline as Code).
 
 ---
 
-# Demo Login Credentials
+## 🔑 Demo Credentials
 
-After running the database seeders, use the following credentials:
-
-| Role        | Username   | Email                                                         | Password |
-| ----------- | ---------- | ------------------------------------------------------------- | -------- |
-| Super Admin | cj         | [cj@cj.com](mailto:cj@cj.com)                                 | cj       |
-| Admin       | admin      | [admin@admin.com](mailto:admin@admin.com)                     | cj       |
-| Teacher     | teacher    | [teacher@teacher.com](mailto:teacher@teacher.com)             | cj       |
-| Parent      | parent     | [parent@parent.com](mailto:parent@parent.com)                 | cj       |
-| Accountant  | accountant | [accountant@accountant.com](mailto:accountant@accountant.com) | cj       |
-| Student     | student    | [student@student.com](mailto:student@student.com)             | cj       |
+| Role        | Username   | Password |
+| ----------- | ---------- | -------- |
+| Super Admin | cj         | cj       |
+| Admin       | admin      | cj       |
+| Teacher     | teacher    | cj       |
+| Parent      | parent     | cj       |
+| Accountant  | accountant | cj       |
+| Student     | student    | cj       |
 
 ---
 
-# Role Capabilities
+## 🤝 Contributing
 
-## Super Administrator
-
-* Create all user accounts
-* Manage all system settings
-* Delete any record in the system
-
-## Administrators
-
-* Manage students, classes, and sections
-* Manage examinations and grading
-* Manage subjects
-* Manage user accounts
-* Manage school notices and events
-* Manage fee structures and payments
-
-## Teachers
-
-* Manage assigned classes and subjects
-* Enter and update student results
-* Manage timetables
-* Upload learning materials
-* Update personal profile
-
-## Students
-
-* View academic results
-* Access class timetable
-* View fee payment status
-* Access learning materials
-* Manage personal profile
-
-## Parents
-
-* Monitor student performance
-* View and print report cards
-* View fee payment records
-* Track class timetable
-* Manage personal profile
-
-## Accountants
-
-* Manage fees and payments
-* Generate payment receipts
-* Track financial transactions
-
-## Librarians
-
-* Manage library inventory
-* Issue and receive books
-* Track borrowing history
-
----
-
-# Contributing
-
-Contributions, feature requests, and bug reports are welcome.
+Contributions, suggestions, and pull requests are welcome.
 
 1. Fork the repository
 2. Create a feature branch
 3. Commit your changes
-4. Submit a Pull Request
+4. Push to your fork
+5. Submit a Pull Request
 
 ---
 
-# Security
+## 🛡 Security
 
-If you discover a security vulnerability, please contact the maintainer directly instead of creating a public issue.
-
----
-
-# Roadmap
-
-The following modules are currently being improved:
-
-* Noticeboard and Calendar
-* Library Management
-* Study Materials Management
-* Accountant Dashboard
-* Librarian Dashboard
+If you discover a security vulnerability, please create a private disclosure or contact the maintainer directly.
 
 ---
 
-# License
+## 🗺 Roadmap
 
-This project is open-source and available under the MIT License.
+Planned improvements include:
+
+* Enhanced Noticeboard & Calendar
+* Library Management Enhancements
+* Student Attendance Module
+* SMS Notifications
+* Email Notifications
+* Mobile Application Integration
+* REST API Support
+* Multi-School Support
 
 ---
 
-# Author
+## 📄 License
 
+This project is licensed under the MIT License.
+
+---
+
+## 👨‍💻 Maintainer
+
+**Gerald Masaba**
+
+* GitHub: https://github.com/masabagerald
+* LinkedIn: https://www.linkedin.com/in/masabagerald/
