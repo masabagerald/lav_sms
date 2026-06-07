@@ -22,6 +22,17 @@ pipeline {
             }
         }
 
+        stage('Debug Files') {
+            steps {
+                sh '''
+                    pwd
+                    ls -la
+                    ls -la docker
+                    ls -la docker/nginx
+                '''
+            }
+        }
+
         stage('Start Environment') {
             steps {
                 sh 'docker compose up -d'
