@@ -7,17 +7,11 @@ pipeline {
 
     stages {
 
-       /*  stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        } */
-
         stage('Build Docker Image') {
             steps {
                 sh '''
-                    docker build -t lavsms:${BUILD_NUMBER} .
-                    docker tag lavsms:${BUILD_NUMBER} lavsms:latest
+                    docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .
+                    docker tag ${IMAGE_NAME}:${BUILD_NUMBER} ${IMAGE_NAME}:latest
                 '''
             }
         }
@@ -39,12 +33,25 @@ pipeline {
                     ls -l docker/nginx/default.conf
                     cat docker/nginx/default.conf
                 '''
-            
             }
         }
+
+        stage('Start Environment') {
+            steps {
+                sh '''
+                    docker compose down || true
+                    docker compose up -d
+                    sleep 15
+                    docker compose ps
+                '''
+            }
+        }
+
         stage('Inspect App') {
             steps {
                 sh '''
+                    docker compose ps
+
                     docker compose exec -T app pwd
                     docker compose exec -T app ls -la
                     docker compose exec -T app ls -la /var/www
@@ -52,29 +59,31 @@ pipeline {
             }
         }
 
-        stage('Start Environment') {
-            steps {
-                sh 'docker compose up -d'
-                sh 'sleep 15'
-            }
-        }
-
         stage('Run Tests') {
             steps {
-                sh 'docker compose exec -T app php artisan test'
+                sh '''
+                    docker compose exec -T app php artisan test
+                '''
             }
         }
 
         stage('Verify Docker Image') {
             steps {
-                sh 'docker images | grep ${IMAGE_NAME}'
+                sh '''
+                    docker images | grep ${IMAGE_NAME}
+                '''
             }
         }
     }
 
     post {
         always {
-            sh 'docker compose down || true'
+            sh '''
+                docker compose logs app || true
+                docker compose logs nginx || true
+                docker compose logs postgres || true
+                docker compose down || true
+            '''
         }
     }
 }
