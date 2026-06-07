@@ -32,6 +32,26 @@ pipeline {
             }
         }
 
+        stage('Inspect Image') {
+            steps {
+                sh 'docker images | grep lavsms'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh '''
+                docker stop lavsms-app || true
+                docker rm lavsms-app || true
+
+                docker run -d \
+                    --name lavsms-app \
+                    -p 8081:80 \
+                    lavsms:${BUILD_NUMBER}
+                '''
+            }
+        }
+
     }
 
     post {
