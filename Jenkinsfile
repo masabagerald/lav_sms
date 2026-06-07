@@ -33,6 +33,15 @@ pipeline {
             }
         }
 
+        stage('Inspect Nginx Config') {
+            steps {
+                sh '''
+                    file docker/nginx/default.conf
+                    cat docker/nginx/default.conf
+                '''
+            }
+        }
+
         stage('Start Environment') {
             steps {
                 sh 'docker compose up -d'
