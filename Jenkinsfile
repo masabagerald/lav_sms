@@ -59,6 +59,15 @@ pipeline {
             }
         }
 
+        stage('Prepare Laravel') {
+            steps {
+                sh '''
+                    docker compose exec -T app php artisan config:clear
+                    docker compose exec -T app php artisan cache:clear
+                '''
+            }
+        }
+
         stage('Run Tests') {
             steps {
                 sh '''
