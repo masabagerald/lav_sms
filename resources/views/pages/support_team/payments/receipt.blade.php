@@ -105,7 +105,7 @@
             <tbody>
             @foreach($receipts as $r)
                 <tr>
-                    <td>{{ date('D\, j F\, Y', strtotime($r->payment_date)) }}</td>
+                    <td>{{ date('D\, j F\, Y', strtotime($r->payment_date ?: $r->created_at)) }}</td>
                     <td>{{ $r->amt_paid }}</td>
                     <td>{{ $r->balance }}</td>
                 </tr>

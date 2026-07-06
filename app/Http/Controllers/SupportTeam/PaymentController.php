@@ -135,8 +135,9 @@ class PaymentController extends Controller
     public function pay_now(Request $req, $pr_id)
     {
         $this->validate($req, [
-            'amt_paid' => 'required|numeric'
-        ], [], ['amt_paid' => 'Amount Paid']);
+            'amt_paid' => 'required|numeric',
+            'payment_date' => 'nullable|date'
+        ], [], ['amt_paid' => 'Amount Paid', 'payment_date' => 'Payment Date']);
 
         $pr = $this->pay->findRecord($pr_id);
         $payment = $this->pay->find($pr->payment_id);
@@ -153,6 +154,7 @@ class PaymentController extends Controller
         $d2['balance'] = $bal;
         $d2['pr_id'] = $pr_id;
         $d2['year'] = $this->year;
+        $d2['payment_date'] = $req->payment_date ?: now();
 
         $this->pay->createReceipt($d2);
         return Qs::jsonUpdateOk();
