@@ -141,10 +141,15 @@ class Qm
         Cache::forget(self::CACHE_KEY);
     }
 
-    /** Modules grouped by category for the management grid */
+    /** Modules grouped by category for the management grid (each entry carries its slug) */
     public static function groupedByCategory(): Collection
     {
         return self::all()
+            ->map(function ($module, $slug) {
+                $module['slug'] = $slug;
+
+                return $module;
+            })
             ->groupBy(function ($module) {
                 return $module['category'] ?? 'Other';
             })

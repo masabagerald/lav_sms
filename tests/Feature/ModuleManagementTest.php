@@ -84,6 +84,18 @@ class ModuleManagementTest extends TestCase
     }
 
     /** @test */
+    public function module_cards_carry_real_slugs_not_indexes()
+    {
+        // Regression: Collection::groupBy() drops keys by default, which made the
+        // UI post numeric "slugs" (0,1,2...) and fail with "Unknown module".
+        $html = $this->actingAs($this->superAdmin)->get(route('settings'))->content();
+
+        foreach (Qm::all()->keys() as $slug) {
+            $this->assertStringContainsString('data-slug="' . $slug . '"', $html);
+        }
+    }
+
+    /** @test */
     public function plain_admin_cannot_open_settings_or_toggle_modules()
     {
         $this->actingAs($this->admin)->get(route('settings'))->assertRedirect();

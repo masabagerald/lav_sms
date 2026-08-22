@@ -271,8 +271,9 @@
                         @foreach($grouped_modules as $category => $mods)
                             <p class="set-section-title mt-2">{{ $category }}</p>
                             <div class="row">
-                                @foreach($mods as $slug => $m)
+                                @foreach($mods as $m)
                                     @php
+                                        $slug = $m['slug'];
                                         $enabled = Qm::enabled($slug);
                                         $required = !empty($m['required']);
                                         $deps = collect($m['depends_on'] ?? [])->map(function ($s) { return Qm::get($s)['name'] ?? $s; });
