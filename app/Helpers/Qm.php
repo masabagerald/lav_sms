@@ -19,16 +19,34 @@ class Qm
     public const SETTING_KEY = 'disabled_modules';
     public const CACHE_KEY   = 'qm.disabled_modules';
 
+    /** Raw registry array; falls back to the file when config cache is stale */
+    protected static function registry(): array
+    {
+        static $fallback = null;
+
+        $modules = config('modules');
+
+        if (!is_array($modules) || !count($modules)) {
+            if ($fallback === null) {
+                $file = config_path('modules.php');
+                $fallback = file_exists($file) ? (array) require $file : [];
+            }
+            $modules = $fallback;
+        }
+
+        return is_array($modules) ? $modules : [];
+    }
+
     /** All registered modules keyed by slug */
     public static function all(): Collection
     {
-        return collect(config('modules'));
+        return collect(self::registry());
     }
 
     /** Single module definition or null */
     public static function get(string $slug)
     {
-        return config("modules.$slug");
+        return self::registry()[$slug] ?? null;
     }
 
     /** Slugs of currently disabled modules (persisted, cached) */
