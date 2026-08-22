@@ -161,16 +161,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('dorms', 'DormController');
         Route::resource('payments', 'PaymentController');
 
-        Route::resource('reports', 'ReportController');
-
-        Route::get('/reports/payments', [ReportController::class, 'index'])
+        Route::get('/reports/payments', 'ReportController@index')
     ->name('reports.payments');
 
-    
-       
      Route::get('/reports/student/payments', 'ReportController@paymentReport')->name('students.payments');
-       
 
+        Route::resource('reports', 'ReportController');
 
     
 
@@ -179,12 +175,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     });
 
-    /************************ AJAX ****************************/
-    Route::group(['prefix' => 'ajax'], function() {
-        Route::get('get_lga/{state_id}', 'AjaxController@get_lga')->name('get_lga');
-        Route::get('get_class_sections/{class_id}', 'AjaxController@get_class_sections')->name('get_class_sections');
-        Route::get('get_class_subjects/{class_id}', 'AjaxController@get_class_subjects')->name('get_class_subjects');
-    });
+        /************************ AJAX ****************************/
+        Route::group(['prefix' => 'ajax'], function() {
+            Route::get('get_lga/{state_id}', 'AjaxController@get_lga')->name('get_lga');
+            Route::get('get_class_sections/{class_id}', 'AjaxController@get_class_sections')->name('get_class_sections');
+            Route::get('get_class_subjects/{class_id}', 'AjaxController@get_class_subjects')->name('get_class_subjects');
+            Route::get('search', 'AjaxController@quick_search')->name('ajax.search');
+        });
 
 });
 

@@ -32,13 +32,28 @@
 
 			<span class="navbar-text ml-md-3 mr-md-auto"></span>
 
- 
+        {{-- Global quick search (staff only) --}}
+        @if(Qs::userIsTeamSAT() || Qs::userIsTeamAccount())
+            <div class="dropdown mr-md-auto d-none d-lg-block">
+                <input type="text"
+                       id="global-search"
+                       class="form-control bg-white border-0"
+                       style="min-width: 260px;"
+                       placeholder="Search students, staff…  (name or adm no)"
+                       autocomplete="off"
+                       data-toggle="dropdown"
+                       aria-label="Quick search">
+                <div id="global-search-results" class="dropdown-menu dropdown-menu-left w-100" style="max-height: 380px; overflow-y: auto;">
+                    <h6 class="dropdown-header text-muted">Type at least 2 characters</h6>
+                </div>
+            </div>
+        @endif
 
         <ul class="navbar-nav">
 
             <li class="nav-item dropdown dropdown-user">
                 <a href="#" class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
-                    <img style="width: 38px; height:38px;" src="{{ Auth::user()->photo }}" class="rounded-circle" alt="photo">
+                    @include('partials.user_avatar', ['size' => 38])
                     <span>{{ Auth::user()->name }}</span>
                 </a>
 

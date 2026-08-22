@@ -14,6 +14,11 @@ class ReportController extends Controller
 {
     //
 
+    public function __construct()
+    {
+        $this->middleware('teamAccount');
+    }
+
 public function index(Request $request)
     {
         $currentYear = Carbon::now()->year;

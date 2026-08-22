@@ -39,7 +39,9 @@
 
     <div class="card-header d-flex justify-content-between align-items-center">
 
-        <h6 class="card-title mb-0">Students List</h6>
+        <h6 class="card-title mb-0"><i class="icon-users4 mr-2 text-primary"></i> Students — {{ $my_class->name }}
+            <span class="stat-chip ml-2"><i class="icon-users2"></i>{{ $students->count() }} enrolled</span>
+        </h6>
 
         <div>
             @if(Qs::userIsTeamSA())
@@ -77,6 +79,7 @@
                            data-toggle="tab"
                            href="#section{{ $s->id }}">
                             {{ $my_class->name }} {{ $s->name }}
+                            <span class="badge badge-light border ml-1">{{ $students->where('section_id',$s->id)->count() }}</span>
                         </a>
                     @endforeach
                 </div>
@@ -144,13 +147,15 @@
 
             <div class="modal-body">
 
+                <p class="text-muted small">Upload the class register in Excel format. Existing students with matching admission numbers will be updated.</p>
+
                 <input type="file"
                        name="file"
                        class="form-control"
                        accept=".xls,.xlsx"
                        required>
 
-                <small class="text-muted">Excel only</small>
+                <small class="text-muted"><i class="icon-file-excel mr-1"></i>.xls or .xlsx only</small>
 
             </div>
 

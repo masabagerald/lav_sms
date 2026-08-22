@@ -21,7 +21,7 @@
                 <div class="media">
                     <div class="mr-3">
                         <a href="{{ route('my_account') }}">
-                            <img src="{{ Auth::user()->photo }}" width="38" height="38" class="rounded-circle" alt="photo">
+                            @include('partials.user_avatar', ['size' => 38])
                         </a>
                     </div>
 
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="ml-3 align-self-center">
-                        <a href="{{ route('my_account') }}" class="text-white">
+                        <a href="{{ route('my_account') }}" class="text-white" aria-label="My account settings">
                             <i class="icon-cog3"></i>
                         </a>
                     </div>
@@ -47,89 +47,179 @@
         <div class="card card-sidebar-mobile">
             <ul class="nav nav-sidebar" data-nav-type="accordion">
 
-                <!-- Dashboard -->
+                {{-- ============ Overview ============ --}}
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ (Route::is('dashboard')) ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ Route::is('dashboard') ? 'active' : '' }}">
                         <i class="icon-home4"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
 
-                {{-- Administrative --}}
-                @if(Qs::userIsAdministrative())
-                    <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['payments.index','payments.create','payments.manage']) ? 'nav-item-expanded nav-item-open' : '' }}">
-                        <a href="#" class="nav-link">
-                            <i class="icon-office"></i>
-                            <span>Administrative</span>
-                        </a>
-
-                        <ul class="nav nav-group-sub">
-                            @if(Qs::userIsTeamAccount())
-                                <li class="nav-item">
-                                    <a href="{{ route('payments.create') }}" class="nav-link {{ Route::is('payments.create') ? 'active' : '' }}">
-                                        Create Payment
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('payments.index') }}" class="nav-link">
-                                        Manage Payments
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ route('payments.manage') }}" class="nav-link">
-                                        Student Payments
-                                    </a>
-                                </li>
-                                 <li class="nav-item"><a href="{{ route('students.payments') }}" class="nav-link">All Students Payment Report</a></li>
-
-                                 <li class="nav-item"><a href="{{ route('reports.index') }}" class="nav-link">Confirmed Payments(Full/Partial)</a></li>
-                            @endif
-                        </ul>
-                    </li>
-                @endif
-
-                {{-- Students --}}
+                {{-- ============ Students ============ --}}
                 @if(Qs::userIsTeamSAT())
-                    <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['students.list','students.create']) ? 'nav-item-expanded nav-item-open' : '' }}">
-                        <a href="#" class="nav-link">
-                            <i class="icon-users"></i>
-                            <span>Students</span>
+                    <li class="nav-caption">Students</li>
+
+                    @if(Qs::userIsTeamSA())
+                        <li class="nav-item">
+                            <a href="{{ route('students.create') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.create']) ? 'active' : '' }}">
+                                <i class="icon-plus2"></i>
+                                <span>Admit New Student</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['students.list', 'students.show', 'students.edit', 'students.import']) ? 'nav-item-expanded nav-item-open' : '' }}">
+                        <a href="#" class="nav-link {{ Route::is('students.list') ? 'active' : '' }}">
+                            <i class="icon-users4"></i>
+                            <span>All Students</span>
                         </a>
-
                         <ul class="nav nav-group-sub">
-
-                            @if(Qs::userIsTeamSA())
+                            @foreach(App\Models\MyClass::orderBy('name')->get() as $c)
                                 <li class="nav-item">
-                                    <a href="{{ route('students.create') }}" class="nav-link">
-                                        Admit Student
+                                    <a href="{{ route('students.list', $c->id) }}" class="nav-link">
+                                        {{ $c->name }}
                                     </a>
                                 </li>
-                            @endif
-
-                            <li class="nav-item nav-item-submenu">
-                                <a href="#" class="nav-link">Student Information</a>
-                                <ul class="nav nav-group-sub">
-                                    @foreach(App\Models\MyClass::orderBy('name')->get() as $c)
-                                        <li class="nav-item">
-                                            <a href="{{ route('students.list', $c->id) }}" class="nav-link">
-                                                {{ $c->name }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </li>
-
+                            @endforeach
                         </ul>
+                    </li>
+
+                    @if(Qs::userIsTeamSA())
+                        <li class="nav-item">
+                            <a href="{{ route('students.graduated') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.graduated']) ? 'active' : '' }}">
+                                <i class="icon-switch2"></i>
+                                <span>Graduated Students</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('students.promotion_manage') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.promotion_manage', 'students.promotion']) ? 'active' : '' }}">
+                                <i class="icon-stairs"></i>
+                                <span>Promotions</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                {{-- ============ Academics ============ --}}
+                @if(Qs::userIsTeamSAT())
+                    <li class="nav-caption">Academics</li>
+
+                    @if(Qs::userIsTeamSA())
+                        <li class="nav-item">
+                            <a href="{{ route('classes.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['classes.index', 'classes.edit']) ? 'active' : '' }}">
+                                <i class="icon-office"></i>
+                                <span>Classes</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('sections.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['sections.index', 'sections.edit']) ? 'active' : '' }}">
+                                <i class="icon-menu9"></i>
+                                <span>Sections</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('subjects.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['subjects.index', 'subjects.edit']) ? 'active' : '' }}">
+                                <i class="icon-books"></i>
+                                <span>Subjects</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('grades.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['grades.index', 'grades.edit']) ? 'active' : '' }}">
+                                <i class="icon-check"></i>
+                                <span>Grading System</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('exams.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['exams.index', 'exams.edit']) ? 'active' : '' }}">
+                                <i class="icon-file-text2"></i>
+                                <span>Exams</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    <li class="nav-item">
+                        <a href="{{ route('marks.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['marks.index', 'marks.manage', 'marks.bulk']) ? 'active' : '' }}">
+                            <i class="icon-pencil"></i>
+                            <span>Marks Entry</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('tt.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['tt.index', 'ttr.manage', 'ttr.show']) ? 'active' : '' }}">
+                            <i class="icon-calendar5"></i>
+                            <span>Timetables</span>
+                        </a>
                     </li>
                 @endif
 
-                {{-- Dynamic menu --}}
+                {{-- ============ Finance ============ --}}
+                @if(Qs::userIsTeamAccount())
+                    <li class="nav-caption">Finance</li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('payments.create') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.create']) ? 'active' : '' }}">
+                            <i class="icon-plus2"></i>
+                            <span>Fee Setup</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('payments.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.index', 'payments.show']) ? 'active' : '' }}">
+                            <i class="icon-cash2"></i>
+                            <span>Payments Overview</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('payments.manage') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.manage', 'payments.invoice', 'payments.receipts']) ? 'active' : '' }}">
+                            <i class="icon-calculator"></i>
+                            <span>Record Payments</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('reports.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['reports.index']) ? 'active' : '' }}">
+                            <i class="icon-statistics"></i>
+                            <span>Payment Reports</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('students.payments') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.payments']) ? 'active' : '' }}">
+                            <i class="icon-file-text2"></i>
+                            <span>All-Students Report</span>
+                        </a>
+                    </li>
+                @endif
+
+                {{-- ============ Administration ============ --}}
+                @if(Qs::userIsTeamSA())
+                    <li class="nav-caption">Administration</li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('users.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['users.index', 'users.edit', 'users.show']) ? 'active' : '' }}">
+                            <i class="icon-user-tie"></i>
+                            <span>Staff &amp; Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('dorms.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['dorms.index', 'dorms.edit']) ? 'active' : '' }}">
+                            <i class="icon-home2"></i>
+                            <span>Dormitories</span>
+                        </a>
+                    </li>
+                    @if(Qs::userIsSuperAdmin())
+                        <li class="nav-item">
+                            <a href="{{ route('settings') }}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">
+                                <i class="icon-cog5"></i>
+                                <span>System Settings</span>
+                            </a>
+                        </li>
+                    @endif
+                @endif
+
+                {{-- Role-specific links (student marksheet, parent children...) --}}
                 @include('pages.'.Qs::getUserType().'.menu')
 
-                {{-- My Account --}}
-                <li class="nav-item">
+                {{-- ============ Personal ============ --}}
+                <li class="nav-item mt-2">
                     <a href="{{ route('my_account') }}" class="nav-link">
                         <i class="icon-user"></i>
                         <span>My Account</span>
@@ -138,9 +228,11 @@
 
             </ul>
 
-            {{-- 🔐 LICENSE PANEL --}}
+            {{-- License status (cached to avoid re-validating on every render) --}}
             @php
-                $license = app(\App\Services\LicenseService::class)->validate();
+                $license = cache()->remember('license.sidebar', now()->addMinutes(10), function () {
+                    return app(\App\Services\LicenseService::class)->validate();
+                });
             @endphp
 
             <div class="px-3 mt-4 mb-3">
@@ -148,50 +240,28 @@
                     <div class="card-body p-2 text-center">
 
                         @if($license['valid'])
-                            @php
-                                $data = $license['data'];
-                                $daysLeft = now()->diffInDays($data['expires_at'], false);
-                            @endphp
+                            @php $daysLeft = now()->diffInDays($license['data']['expires_at'], false); @endphp
 
                             @if($daysLeft <= 7)
-                                <span class="badge badge-warning mb-1">
-                                    ⚠️ Expiring Soon
-                                </span>
-                                <div class="text-warning small">
-                                    {{ $daysLeft }} day(s) left
-                                </div>
+                                <span class="badge badge-warning mb-1">Expiring Soon</span>
+                                <div class="text-warning small">{{ $daysLeft }} day(s) left</div>
                             @else
-                                <span class="badge badge-success mb-1">
-                                    Active License
-                                </span>
+                                <span class="badge badge-success mb-1">Licensed</span>
                             @endif
 
-                            <div class="text-light small mt-1">
-                                {{ \Illuminate\Support\Str::limit($data['client'], 25) }}
+                            <div class="text-muted small mt-1">
+                                Expires: {{ \Carbon\Carbon::parse($license['data']['expires_at'])->format('d M Y') }}
                             </div>
-
-                            <div class="text-muted small">
-                                Expires: {{ \Carbon\Carbon::parse($data['expires_at'])->format('d M Y') }}
-                            </div>
-
                         @else
-                            <span class="badge badge-danger mb-1">
-                                License Issue
-                            </span>
-
-                            <div class="text-danger small">
-                                {{ $license['message'] }}
-                            </div>
-
-                            <a href="{{ route('license.upload') }}" class="btn btn-sm btn-outline-light mt-2">
-                                Fix License
-                            </a>
+                            <span class="badge badge-danger mb-1">License Issue</span>
+                            <div class="text-danger small">{{ \Illuminate\Support\Str::limit($license['message'], 60) }}</div>
+                            <a href="{{ route('license.upload') }}" class="btn btn-sm btn-outline-light mt-2">Fix License</a>
                         @endif
 
                     </div>
                 </div>
             </div>
-            {{-- END LICENSE PANEL --}}
+            {{-- /license --}}
 
         </div>
     </div>

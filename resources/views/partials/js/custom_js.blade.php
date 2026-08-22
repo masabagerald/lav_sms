@@ -284,3 +284,65 @@
 
 
 </script>
+    {{-- Global quick search (staff only) --}}
+    @if((Qs::userIsTeamSAT() || Qs::userIsTeamAccount()) && Route::has('ajax.search'))
+    <script>
+    (function () {
+        var input = document.getElementById('global-search');
+        if (!input) return;
+
+        var box = document.getElementById('global-search-results');
+        var timer = null;
+        var lastQuery = null;
+
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+                return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+            });
+        }
+
+        function render(items) {
+            if (!items.length) {
+                box.innerHTML = '<h6 class="dropdown-header text-muted">No matches found</h6>';
+                return;
+            }
+            var html = '';
+            items.forEach(function (it, i) {
+                html += '<a class="dropdown-item d-flex justify-content-between align-items-center' + (i === 0 ? ' active' : '') + '" href="' + esc(it.url) + '">'
+                     +  '<span><i class="icon-' + (it.type === 'staff' ? 'user-tie' : 'graduation') + ' mr-2 opacity-60"></i>' + esc(it.label) + '</span>'
+                     +  '<small class="text-muted ml-3">' + esc(it.meta) + '</small>'
+                     +  '</a>';
+            });
+            box.innerHTML = html;
+        }
+
+        function search() {
+            var q = input.value.trim();
+            if (q.length < 2) { box.innerHTML = '<h6 class="dropdown-header text-muted">Type at least 2 characters</h6>'; return; }
+            if (q === lastQuery) return;
+            lastQuery = q;
+
+            $.get('{{ route('ajax.search') }}', { q: q }, render, 'json').fail(function () {
+                box.innerHTML = '<h6 class="dropdown-header text-danger">Search failed. Try again.</h6>';
+            });
+        }
+
+        $(input)
+            .on('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(search, 250);
+            })
+            .on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    var first = box.querySelector('a.dropdown-item');
+                    if (first && input.value.trim().length >= 2) window.location.href = first.href;
+                }
+            })
+            .on('focus', function () {
+                lastQuery = null;
+                search();
+            });
+    })();
+    </script>
+    @endif

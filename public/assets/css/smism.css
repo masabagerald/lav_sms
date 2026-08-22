@@ -1,0 +1,259 @@
+/* ============================================================
+   SMIS Design Layer — sits on top of Limitless/Bootstrap 4.
+   Tokens first, then component refinements. Keep additions
+   conservative: this file must uplift every screen safely.
+   ============================================================ */
+
+:root {
+    --smis-primary: #1f4e8c;
+    --smis-primary-dark: #16305c;
+    --smis-accent: #43a047;
+    --smis-danger: #e53935;
+    --smis-warning: #fb8c00;
+    --smis-radius: .55rem;
+    --smis-shadow-sm: 0 1px 3px rgba(16, 42, 80, .08);
+    --smis-shadow-md: 0 4px 14px rgba(16, 42, 80, .10);
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Cards ---------- */
+.card {
+    border: 1px solid rgba(30, 60, 110, .07);
+    box-shadow: var(--smis-shadow-sm);
+    border-radius: var(--smis-radius);
+}
+
+.card-header {
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border-bottom: 1px solid rgba(30, 60, 110, .08);
+}
+
+.card-title { font-weight: 600; letter-spacing: -.01em; }
+
+/* ---------- Tables ---------- */
+.table thead th {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #7b8ca6;
+    border-bottom-width: 1px;
+}
+
+.table td { vertical-align: middle; }
+
+.table-striped tbody tr:nth-child(odd) { background-color: rgba(31, 78, 140, .018); }
+
+/* Row hover affordance */
+.table-hover tbody tr:hover,
+.table tbody tr:hover { background-color: rgba(31, 78, 140, .035); transition: background-color .12s ease; }
+
+/* ---------- Buttons ---------- */
+.btn { border-radius: var(--smis-radius); font-weight: 500; }
+.btn-primary {
+    background-color: var(--smis-primary);
+    border-color: var(--smis-primary);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #24457a;
+    border-color: #24457a;
+}
+.btn-light { box-shadow: inset 0 0 0 1px rgba(30, 60, 110, .12); }
+
+/* Accessible focus */
+.btn:focus-visible,
+a:focus-visible,
+.form-control:focus-visible {
+    outline: 2px solid #7aa7e0;
+    outline-offset: 2px;
+}
+
+/* ---------- Badges & status chips ---------- */
+.badge { font-weight: 600; letter-spacing: .02em; padding: .32em .7em; border-radius: 1rem; }
+
+.payment-status { padding: .22rem .65rem; border-radius: 1rem; font-size: .74rem; font-weight: 600; display: inline-block; }
+.status-paid    { background: #e8f5e9; color: #2e7d32; }
+.status-partial { background: #fff3e0; color: #ef6c00; }
+.status-unpaid  { background: #ffebee; color: #c62828; }
+
+/* ---------- Forms ---------- */
+.form-control {
+    border-radius: var(--smis-radius);
+    border-color: rgba(30, 60, 110, .18);
+}
+.form-control:focus {
+    border-color: var(--smis-primary);
+    box-shadow: 0 0 0 .2rem rgba(31, 78, 140, .10);
+}
+label, .col-form-label { color: #37474f; }
+
+/* Required-field marker */
+.req::after { content: " *"; color: #e53935; font-weight: 700; }
+
+/* ---------- Sidebar ---------- */
+.sidebar-dark .nav-sidebar .nav-link.active {
+    background: linear-gradient(90deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    box-shadow: inset 3px 0 0 var(--smis-accent);
+}
+.nav-sidebar .nav-link > i:first-child { width: 1.4rem; text-align: center; }
+
+/* Sidebar group captions */
+.nav-caption {
+    padding: 1rem 1.25rem .35rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.38);
+}
+
+/* ---------- Breadcrumbs ---------- */
+.breadcrumb-line { background: transparent; }
+.breadcrumb .breadcrumb-item { font-size: .82rem; }
+.breadcrumb .breadcrumb-item + .breadcrumb-item::before { content: "\e9c9"; font-family: icomoon; font-size: 11px; opacity: .5; }
+
+/* ---------- Empty states ---------- */
+.empty-state {
+    text-align: center;
+    padding: 2.75rem 1rem;
+    color: #90a0b7;
+}
+.empty-state i {
+    font-size: 2.4rem;
+    display: block;
+    margin-bottom: .75rem;
+    opacity: .45;
+}
+.empty-state .empty-title { font-weight: 600; color: #546e7a; margin-bottom: .2rem; }
+
+/* ---------- KPI helpers (dashboard) ---------- */
+.kpi-card h3 { letter-spacing: -.02em; }
+
+/* ---------- List page header (title + actions row) ---------- */
+.smis-page-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    margin-bottom: 1.1rem;
+}
+.smis-page-head h1 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -.01em;
+    margin: 0;
+}
+.smis-page-head h1 small {
+    display: block;
+    font-size: .78rem;
+    font-weight: 400;
+    color: #7b8ca6;
+    margin-top: .15rem;
+}
+@media (max-width: 767.98px) {
+    .smis-page-head h1 { font-size: 1.15rem; }
+}
+
+/* ---------- Filter / selector toolbar ---------- */
+.smis-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: .75rem 1rem;
+}
+.smis-toolbar > div { min-width: 210px; }
+.smis-toolbar label {
+    display: block;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #7b8ca6;
+    margin-bottom: .3rem;
+    font-weight: 700;
+}
+@media (max-width: 575.98px) {
+    .smis-toolbar > div { min-width: 100%; }
+}
+
+/* ---------- Form section titles ---------- */
+.form-section-title {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .74rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #546e7a;
+    margin: 1.4rem 0 .9rem;
+    padding-bottom: .45rem;
+    border-bottom: 1px solid rgba(30, 60, 110, .10);
+}
+.form-section-title:first-child { margin-top: 0; }
+.form-section-title i { color: var(--smis-primary); font-size: 1rem; }
+
+/* ---------- Table avatars & identity cells ---------- */
+.avatar-sm {
+    width: 36px; height: 36px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgba(30, 60, 110, .12);
+}
+.cell-identity .name { font-weight: 600; color: #263238; display: block; }
+.cell-identity .meta { font-size: .72rem; color: #90a0b7; display: block; }
+
+/* Gender chips */
+.chip-gender {
+    display: inline-block;
+    padding: .16rem .6rem;
+    border-radius: 1rem;
+    font-size: .72rem;
+    font-weight: 600;
+}
+.chip-male   { background: #e3f2fd; color: #1565c0; }
+.chip-female { background: #fce4ec; color: #ad1457; }
+
+/* ---------- Stat chip (inline counters) ---------- */
+.stat-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: rgba(31, 78, 140, .06);
+    border: 1px solid rgba(31, 78, 140, .10);
+    color: var(--smis-primary-dark);
+    border-radius: 2rem;
+    padding: .22rem .8rem;
+    font-size: .76rem;
+    font-weight: 600;
+}
+.stat-chip i { opacity: .65; }
+
+/* ---------- Money cells ---------- */
+.money-cell { font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.money-muted { color: #90a0b7; font-weight: 400; }
+
+/* ---------- Fee balance progress ---------- */
+.fee-progress { min-width: 130px; }
+.fee-progress .progress { height: 6px; margin-bottom: .25rem; background: #eceff1; }
+.fee-progress small { font-size: .7rem; color: #7b8ca6; }
+
+/* ---------- Scrollbars (webkit) ---------- */
+.sidebar-content::-webkit-scrollbar { width: 6px; }
+.sidebar-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
+
+/* ---------- Reduced motion respect ---------- */
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+/* ---------- User avatar fallback (initials) ---------- */
+.user-avatar {
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 50%; color: #fff; font-weight: 600; letter-spacing: .02em;
+    flex: 0 0 auto; user-select: none; text-transform: uppercase;
+}

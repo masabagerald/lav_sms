@@ -4,7 +4,9 @@
 
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h6 class="card-title">Manage Dorms</h6>
+            <h6 class="card-title"><i class="icon-home2 mr-2 text-primary"></i> Manage Dormitories
+                <span class="stat-chip ml-2"><i class="icon-home2"></i>{{ $dorms->count() }} dorms</span>
+            </h6>
             {!! Qs::getPanelOptions() !!}
         </div>
 
@@ -16,36 +18,44 @@
 
             <div class="tab-content">
                     <div class="tab-pane fade show active" id="all-dorms">
-                        <table class="table datatable-button-html5-columns">
+                        @if($dorms->isEmpty())
+                            <div class="empty-state my-4">
+                                <i class="icon-home2"></i>
+                                <div class="empty-title">No dormitories registered</div>
+                                <span class="text-muted">Create a dorm so boarding students can be allocated rooms.</span>
+                            </div>
+                        @else
+                        <div class="table-responsive">
+                        <table class="table table-hover datatable-button-html5-columns">
                             <thead>
                             <tr>
                                 <th>S/N</th>
                                 <th>Name</th>
                                 <th>Description</th>
-                                <th>Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($dorms as $d)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $d->name }}</td>
-                                    <td>{{ $d->description}}</td>
+                                    <td><span class="font-weight-semibold">{{ $d->name }}</span></td>
+                                    <td class="text-muted">{{ $d->description ?: '—'}}</td>
                                     <td class="text-center">
                                         <div class="list-icons">
                                             <div class="dropdown">
-                                                <a href="#" class="list-icons-item" data-toggle="dropdown">
+                                                <a href="#" class="list-icons-item" data-toggle="dropdown" aria-label="Actions for {{ $d->name }}">
                                                     <i class="icon-menu9"></i>
                                                 </a>
 
-                                                <div class="dropdown-menu dropdown-menu-left">
+                                                <div class="dropdown-menu dropdown-menu-right">
                                                     @if(Qs::userIsTeamSA())
                                                     {{--Edit--}}
                                                     <a href="{{ route('dorms.edit', $d->id) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
                                                    @endif
                                                         @if(Qs::userIsSuperAdmin())
                                                     {{--Delete--}}
-                                                    <a id="{{ $d->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                    <a id="{{ $d->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item text-danger"><i class="icon-trash"></i> Delete</a>
                                                     <form method="post" id="item-delete-{{ $d->id }}" action="{{ route('dorms.destroy', $d->id) }}" class="hidden">@csrf @method('delete')</form>
                                                         @endif
 
@@ -57,6 +67,8 @@
                             @endforeach
                             </tbody>
                         </table>
+                        </div>
+                        @endif
                     </div>
 
                 <div class="tab-pane fade" id="new-dorm">
