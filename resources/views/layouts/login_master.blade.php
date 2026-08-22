@@ -7,9 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'CJ INSPIRED ACADEMY') }}</title>
+    <title>{{ Qs::getSystemName() }} | School Management System</title>
 
     @include('partials.login.inc_top')
+    @stack('styles')
 </head>
 
 <body>

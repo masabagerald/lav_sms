@@ -11,6 +11,9 @@ services:
   #     - postgres
 
   app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: lavsms:latest
     # container_name: laravel_app
     # volumes:
@@ -26,6 +29,7 @@ services:
     volumes:
       # - .:/var/www
       - ./docker/nginx:/etc/nginx/conf.d
+      - ./public:/var/www/public
     depends_on:
       - app
 
