@@ -56,10 +56,10 @@
                 </li>
 
                 {{-- ============ Students ============ --}}
-                @if(Qs::userIsTeamSAT())
+                @if(Qs::userIsTeamSAT() && (Qm::enabled('students') || Qm::enabled('promotions')))
                     <li class="nav-caption">Students</li>
 
-                    @if(Qs::userIsTeamSA())
+                    @if(Qs::userIsTeamSA() && Qm::enabled('students'))
                         <li class="nav-item">
                             <a href="{{ route('students.create') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.create']) ? 'active' : '' }}">
                                 <i class="icon-plus2"></i>
@@ -68,6 +68,7 @@
                         </li>
                     @endif
 
+                    @if(Qm::enabled('students'))
                     <li class="nav-item nav-item-submenu {{ in_array(Route::currentRouteName(), ['students.list', 'students.show', 'students.edit', 'students.import']) ? 'nav-item-expanded nav-item-open' : '' }}">
                         <a href="#" class="nav-link {{ Route::is('students.list') ? 'active' : '' }}">
                             <i class="icon-users4"></i>
@@ -83,15 +84,18 @@
                             @endforeach
                         </ul>
                     </li>
+                    @endif
 
-                    @if(Qs::userIsTeamSA())
+                    @if(Qs::userIsTeamSA() && Qm::enabled('students'))
                         <li class="nav-item">
                             <a href="{{ route('students.graduated') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.graduated']) ? 'active' : '' }}">
                                 <i class="icon-switch2"></i>
                                 <span>Graduated Students</span>
                             </a>
                         </li>
+                    @endif
 
+                    @if(Qs::userIsTeamSA() && Qm::enabled('promotions'))
                         <li class="nav-item">
                             <a href="{{ route('students.promotion_manage') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.promotion_manage', 'students.promotion']) ? 'active' : '' }}">
                                 <i class="icon-stairs"></i>
@@ -102,91 +106,106 @@
                 @endif
 
                 {{-- ============ Academics ============ --}}
-                @if(Qs::userIsTeamSAT())
+                @if(Qs::userIsTeamSAT() && (Qm::enabled('classes') || Qm::enabled('subjects') || Qm::enabled('examinations') || Qm::enabled('timetables')))
                     <li class="nav-caption">Academics</li>
 
                     @if(Qs::userIsTeamSA())
+                        @if(Qm::enabled('classes'))
+                            <li class="nav-item">
+                                <a href="{{ route('classes.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['classes.index', 'classes.edit']) ? 'active' : '' }}">
+                                    <i class="icon-office"></i>
+                                    <span>Classes</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('sections.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['sections.index', 'sections.edit']) ? 'active' : '' }}">
+                                    <i class="icon-menu9"></i>
+                                    <span>Sections</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if(Qm::enabled('subjects'))
+                            <li class="nav-item">
+                                <a href="{{ route('subjects.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['subjects.index', 'subjects.edit']) ? 'active' : '' }}">
+                                    <i class="icon-books"></i>
+                                    <span>Subjects</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if(Qm::enabled('examinations'))
+                            <li class="nav-item">
+                                <a href="{{ route('grades.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['grades.index', 'grades.edit']) ? 'active' : '' }}">
+                                    <i class="icon-check"></i>
+                                    <span>Grading System</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('exams.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['exams.index', 'exams.edit']) ? 'active' : '' }}">
+                                    <i class="icon-file-text2"></i>
+                                    <span>Exams</span>
+                                </a>
+                            </li>
+                        @endif
+                    @endif
+
+                    @if(Qm::enabled('examinations'))
                         <li class="nav-item">
-                            <a href="{{ route('classes.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['classes.index', 'classes.edit']) ? 'active' : '' }}">
-                                <i class="icon-office"></i>
-                                <span>Classes</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('sections.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['sections.index', 'sections.edit']) ? 'active' : '' }}">
-                                <i class="icon-menu9"></i>
-                                <span>Sections</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('subjects.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['subjects.index', 'subjects.edit']) ? 'active' : '' }}">
-                                <i class="icon-books"></i>
-                                <span>Subjects</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('grades.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['grades.index', 'grades.edit']) ? 'active' : '' }}">
-                                <i class="icon-check"></i>
-                                <span>Grading System</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('exams.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['exams.index', 'exams.edit']) ? 'active' : '' }}">
-                                <i class="icon-file-text2"></i>
-                                <span>Exams</span>
+                            <a href="{{ route('marks.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['marks.index', 'marks.manage', 'marks.bulk']) ? 'active' : '' }}">
+                                <i class="icon-pencil"></i>
+                                <span>Marks Entry</span>
                             </a>
                         </li>
                     @endif
 
-                    <li class="nav-item">
-                        <a href="{{ route('marks.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['marks.index', 'marks.manage', 'marks.bulk']) ? 'active' : '' }}">
-                            <i class="icon-pencil"></i>
-                            <span>Marks Entry</span>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{ route('tt.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['tt.index', 'ttr.manage', 'ttr.show']) ? 'active' : '' }}">
-                            <i class="icon-calendar5"></i>
-                            <span>Timetables</span>
-                        </a>
-                    </li>
+                    @if(Qm::enabled('timetables'))
+                        <li class="nav-item">
+                            <a href="{{ route('tt.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['tt.index', 'ttr.manage', 'ttr.show']) ? 'active' : '' }}">
+                                <i class="icon-calendar5"></i>
+                                <span>Timetables</span>
+                            </a>
+                        </li>
+                    @endif
                 @endif
 
                 {{-- ============ Finance ============ --}}
-                @if(Qs::userIsTeamAccount())
+                @if(Qs::userIsTeamAccount() && (Qm::enabled('finance') || Qm::enabled('reports')))
                     <li class="nav-caption">Finance</li>
 
-                    <li class="nav-item">
-                        <a href="{{ route('payments.create') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.create']) ? 'active' : '' }}">
-                            <i class="icon-plus2"></i>
-                            <span>Fee Setup</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('payments.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.index', 'payments.show']) ? 'active' : '' }}">
-                            <i class="icon-cash2"></i>
-                            <span>Payments Overview</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('payments.manage') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.manage', 'payments.invoice', 'payments.receipts']) ? 'active' : '' }}">
-                            <i class="icon-calculator"></i>
-                            <span>Record Payments</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('reports.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['reports.index']) ? 'active' : '' }}">
-                            <i class="icon-statistics"></i>
-                            <span>Payment Reports</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('students.payments') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.payments']) ? 'active' : '' }}">
-                            <i class="icon-file-text2"></i>
-                            <span>All-Students Report</span>
-                        </a>
-                    </li>
+                    @if(Qm::enabled('finance'))
+                        <li class="nav-item">
+                            <a href="{{ route('payments.create') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.create']) ? 'active' : '' }}">
+                                <i class="icon-plus2"></i>
+                                <span>Fee Setup</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('payments.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.index', 'payments.show']) ? 'active' : '' }}">
+                                <i class="icon-cash2"></i>
+                                <span>Payments Overview</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('payments.manage') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['payments.manage', 'payments.invoice', 'payments.receipts']) ? 'active' : '' }}">
+                                <i class="icon-calculator"></i>
+                                <span>Record Payments</span>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if(Qm::enabled('reports'))
+                        <li class="nav-item">
+                            <a href="{{ route('reports.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['reports.index']) ? 'active' : '' }}">
+                                <i class="icon-statistics"></i>
+                                <span>Payment Reports</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('students.payments') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['students.payments']) ? 'active' : '' }}">
+                                <i class="icon-file-text2"></i>
+                                <span>All-Students Report</span>
+                            </a>
+                        </li>
+                    @endif
                 @endif
 
                 {{-- ============ Administration ============ --}}
@@ -199,12 +218,14 @@
                             <span>Staff &amp; Users</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="{{ route('dorms.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['dorms.index', 'dorms.edit']) ? 'active' : '' }}">
-                            <i class="icon-home2"></i>
-                            <span>Dormitories</span>
-                        </a>
-                    </li>
+                    @if(Qm::enabled('dormitories'))
+                        <li class="nav-item">
+                            <a href="{{ route('dorms.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['dorms.index', 'dorms.edit']) ? 'active' : '' }}">
+                                <i class="icon-home2"></i>
+                                <span>Dormitories</span>
+                            </a>
+                        </li>
+                    @endif
                     @if(Qs::userIsSuperAdmin())
                         <li class="nav-item">
                             <a href="{{ route('settings') }}" class="nav-link {{ Route::is('settings') ? 'active' : '' }}">

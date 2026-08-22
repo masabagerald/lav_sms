@@ -210,6 +210,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Qs' => App\Helpers\Qs::class,
+        'Qm' => App\Helpers\Qm::class,
         'Mk' => App\Helpers\Mk::class,
         'Pay' => App\Helpers\Pay::class,
     ],

@@ -190,6 +190,8 @@ Route::group(['namespace' => 'SuperAdmin','middleware' => 'super_admin', 'prefix
 
     Route::get('/settings', 'SettingController@index')->name('settings');
     Route::put('/settings', 'SettingController@update')->name('settings.update');
+    Route::post('/settings/modules/toggle', 'SettingController@toggleModule')->name('settings.modules.toggle');
+    Route::get('/settings/activity', 'SettingController@activity')->name('settings.activity');
 
 });
 

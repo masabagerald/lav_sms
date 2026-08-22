@@ -35,4 +35,5 @@ RUN composer install --no-interaction --prefer-dist
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-CMD ["php-fpm"]
+# Fix storage ownership on every start (CLI/root runs can create root-owned cache files)
+CMD ["sh", "-c", "chown -R www-data:www-data storage bootstrap/cache && exec php-fpm"]
