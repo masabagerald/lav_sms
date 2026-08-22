@@ -161,16 +161,12 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('dorms', 'DormController');
         Route::resource('payments', 'PaymentController');
 
-        Route::resource('reports', 'ReportController');
-
-        Route::get('/reports/payments', [ReportController::class, 'index'])
+        Route::get('/reports/payments', 'ReportController@index')
     ->name('reports.payments');
 
-    
-       
      Route::get('/reports/student/payments', 'ReportController@paymentReport')->name('students.payments');
-       
 
+        Route::resource('reports', 'ReportController');
 
     
 

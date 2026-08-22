@@ -1,0 +1,142 @@
+/* ============================================================
+   SMIS Design Layer — sits on top of Limitless/Bootstrap 4.
+   Tokens first, then component refinements. Keep additions
+   conservative: this file must uplift every screen safely.
+   ============================================================ */
+
+:root {
+    --smis-primary: #1f4e8c;
+    --smis-primary-dark: #16305c;
+    --smis-accent: #43a047;
+    --smis-danger: #e53935;
+    --smis-warning: #fb8c00;
+    --smis-radius: .55rem;
+    --smis-shadow-sm: 0 1px 3px rgba(16, 42, 80, .08);
+    --smis-shadow-md: 0 4px 14px rgba(16, 42, 80, .10);
+}
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Cards ---------- */
+.card {
+    border: 1px solid rgba(30, 60, 110, .07);
+    box-shadow: var(--smis-shadow-sm);
+    border-radius: var(--smis-radius);
+}
+
+.card-header {
+    padding: 1rem 1.25rem;
+    background: #fff;
+    border-bottom: 1px solid rgba(30, 60, 110, .08);
+}
+
+.card-title { font-weight: 600; letter-spacing: -.01em; }
+
+/* ---------- Tables ---------- */
+.table thead th {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #7b8ca6;
+    border-bottom-width: 1px;
+}
+
+.table td { vertical-align: middle; }
+
+.table-striped tbody tr:nth-child(odd) { background-color: rgba(31, 78, 140, .018); }
+
+/* Row hover affordance */
+.table-hover tbody tr:hover,
+.table tbody tr:hover { background-color: rgba(31, 78, 140, .035); transition: background-color .12s ease; }
+
+/* ---------- Buttons ---------- */
+.btn { border-radius: var(--smis-radius); font-weight: 500; }
+.btn-primary {
+    background-color: var(--smis-primary);
+    border-color: var(--smis-primary);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: #24457a;
+    border-color: #24457a;
+}
+.btn-light { box-shadow: inset 0 0 0 1px rgba(30, 60, 110, .12); }
+
+/* Accessible focus */
+.btn:focus-visible,
+a:focus-visible,
+.form-control:focus-visible {
+    outline: 2px solid #7aa7e0;
+    outline-offset: 2px;
+}
+
+/* ---------- Badges & status chips ---------- */
+.badge { font-weight: 600; letter-spacing: .02em; padding: .32em .7em; border-radius: 1rem; }
+
+.payment-status { padding: .22rem .65rem; border-radius: 1rem; font-size: .74rem; font-weight: 600; display: inline-block; }
+.status-paid    { background: #e8f5e9; color: #2e7d32; }
+.status-partial { background: #fff3e0; color: #ef6c00; }
+.status-unpaid  { background: #ffebee; color: #c62828; }
+
+/* ---------- Forms ---------- */
+.form-control {
+    border-radius: var(--smis-radius);
+    border-color: rgba(30, 60, 110, .18);
+}
+.form-control:focus {
+    border-color: var(--smis-primary);
+    box-shadow: 0 0 0 .2rem rgba(31, 78, 140, .10);
+}
+label, .col-form-label { color: #37474f; }
+
+/* Required-field marker */
+.req::after { content: " *"; color: #e53935; font-weight: 700; }
+
+/* ---------- Sidebar ---------- */
+.sidebar-dark .nav-sidebar .nav-link.active {
+    background: linear-gradient(90deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    box-shadow: inset 3px 0 0 var(--smis-accent);
+}
+.nav-sidebar .nav-link > i:first-child { width: 1.4rem; text-align: center; }
+
+/* Sidebar group captions */
+.nav-caption {
+    padding: 1rem 1.25rem .35rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.38);
+}
+
+/* ---------- Breadcrumbs ---------- */
+.breadcrumb-line { background: transparent; }
+.breadcrumb .breadcrumb-item { font-size: .82rem; }
+.breadcrumb .breadcrumb-item + .breadcrumb-item::before { content: "\e9c9"; font-family: icomoon; font-size: 11px; opacity: .5; }
+
+/* ---------- Empty states ---------- */
+.empty-state {
+    text-align: center;
+    padding: 2.75rem 1rem;
+    color: #90a0b7;
+}
+.empty-state i {
+    font-size: 2.4rem;
+    display: block;
+    margin-bottom: .75rem;
+    opacity: .45;
+}
+.empty-state .empty-title { font-weight: 600; color: #546e7a; margin-bottom: .2rem; }
+
+/* ---------- KPI helpers (dashboard) ---------- */
+.kpi-card h3 { letter-spacing: -.02em; }
+
+/* ---------- Scrollbars (webkit) ---------- */
+.sidebar-content::-webkit-scrollbar { width: 6px; }
+.sidebar-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
+
+/* ---------- Reduced motion respect ---------- */
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

@@ -69,6 +69,25 @@
 </div>
 <!-- /KPI cards -->
 
+@if(Qs::userIsTeamSA())
+<!-- Quick actions -->
+<div class="d-flex flex-wrap mt-3">
+    <a href="{{ route('students.create') }}" class="btn btn-light btn-sm mr-2 mb-2">
+        <i class="icon-plus2 text-primary mr-1"></i> Admit Student
+    </a>
+    <a href="{{ route('payments.manage') }}" class="btn btn-light btn-sm mr-2 mb-2">
+        <i class="icon-cash2 text-success-400 mr-1"></i> Record Payment
+    </a>
+    <a href="{{ route('marks.index') }}" class="btn btn-light btn-sm mr-2 mb-2">
+        <i class="icon-pencil text-indigo-400 mr-1"></i> Marks Entry
+    </a>
+    <a href="{{ route('reports.index') }}" class="btn btn-light btn-sm mb-2">
+        <i class="icon-statistics text-warning-400 mr-1"></i> Payment Reports
+    </a>
+</div>
+@endif
+<!-- /quick actions -->
+
 <!-- Charts -->
 <div class="row mt-3">
     <div class="col-lg-7">

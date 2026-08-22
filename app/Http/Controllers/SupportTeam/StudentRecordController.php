@@ -46,6 +46,15 @@ class StudentRecordController extends Controller
         $this->student = $student;
    }
 
+    public function index()
+    {
+        $class = $this->my_class->all()->first();
+
+        return $class
+            ? redirect()->route('students.list', $class->id)
+            : redirect()->route('dashboard')->with('flash_warning', __('msg.rnf'));
+    }
+
     public function reset_pass($st_id)
     {
         $st_id = Qs::decodeHash($st_id);
