@@ -4,7 +4,9 @@
 
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h6 class="card-title">Manage Grades</h6>
+            <h6 class="card-title"><i class="icon-check mr-2 text-primary"></i> Grading System
+                <span class="stat-chip ml-2"><i class="icon-check"></i>{{ $grades->count() }} grades</span>
+            </h6>
             {!! Qs::getPanelOptions() !!}
         </div>
 
@@ -16,24 +18,32 @@
 
             <div class="tab-content">
                     <div class="tab-pane fade show active" id="all-grades">
-                        <table class="table datatable-button-html5-columns">
+                        @if($grades->isEmpty())
+                            <div class="empty-state my-4">
+                                <i class="icon-check"></i>
+                                <div class="empty-title">No grades defined yet</div>
+                                <span class="text-muted">Add your grading scale so marks can be graded automatically.</span>
+                            </div>
+                        @else
+                        <div class="table-responsive">
+                        <table class="table table-hover datatable-button-html5-columns">
                             <thead>
                             <tr>
                                 <th>S/N</th>
-                                <th>Name</th>
-                                <th>Grade Type</th>
-                                <th>Range</th>
+                                <th>Grade</th>
+                                <th>Applies To</th>
+                                <th class="text-center">Range</th>
                                 <th>Remark</th>
-                                <th>Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                             </thead>
                             <tbody>
                             @foreach($grades as $gr)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $gr->name }}</td>
-                                    <td>{{ $gr->class_type_id ? $class_types->where('id', $gr->class_type_id)->first()->name : ''}}</td>
-                                    <td>{{ $gr->mark_from.' - '.$gr->mark_to }}</td>
+                                    <td><span class="badge badge-secondary">{{ $gr->name }}</span></td>
+                                    <td>{{ $gr->class_type_id ? $class_types->where('id', $gr->class_type_id)->first()->name : 'All Class Types'}}</td>
+                                    <td class="text-center"><span class="font-weight-semibold">{{ $gr->mark_from.' – '.$gr->mark_to }}</span></td>
                                     <td>{{ $gr->remark }}</td>
                                     <td class="text-center">
                                         <div class="list-icons">
@@ -42,14 +52,14 @@
                                                 <i class="icon-menu9"></i>
                                                 </a>
 
-                                                <div class="dropdown-menu dropdown-menu-left">
+                                                <div class="dropdown-menu dropdown-menu-right">
                                                     @if(Qs::userIsTeamSA())
                                                     {{--Edit--}}
                                                     <a href="{{ route('grades.edit', $gr->id) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
                                                    @endif
                                                     @if(Qs::userIsSuperAdmin())
                                                     {{--Delete--}}
-                                                    <a id="{{ $gr->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                    <a id="{{ $gr->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item text-danger"><i class="icon-trash"></i> Delete</a>
                                                     <form method="post" id="item-delete-{{ $gr->id }}" action="{{ route('grades.destroy', $gr->id) }}" class="hidden">@csrf @method('delete')</form>
                                                         @endif
 
@@ -61,6 +71,8 @@
                             @endforeach
                             </tbody>
                         </table>
+                        </div>
+                        @endif
                     </div>
 
                 <div class="tab-pane fade" id="new-grade">

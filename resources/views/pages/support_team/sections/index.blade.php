@@ -4,7 +4,9 @@
 
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h6 class="card-title">Manage Class Sections</h6>
+            <h6 class="card-title"><i class="icon-menu9 mr-2 text-primary"></i> Manage Class Sections
+                <span class="stat-chip ml-2"><i class="icon-menu9"></i>{{ $sections->count() }} sections</span>
+            </h6>
             {!! Qs::getPanelOptions() !!}
         </div>
 
@@ -66,7 +68,16 @@
                 </div>
 
                 @foreach($my_classes as $d)
-                    <div class="tab-pane fade" id="c{{ $d->id }}">                         <table class="table datatable-button-html5-columns">
+                    <div class="tab-pane fade" id="c{{ $d->id }}">
+                        @if($sections->where('my_class.id', $d->id)->isEmpty())
+                            <div class="empty-state my-4">
+                                <i class="icon-menu9"></i>
+                                <div class="empty-title">No sections in {{ $d->name }} yet</div>
+                                <span class="text-muted">Use the “Create New Section” tab to add one.</span>
+                            </div>
+                        @else
+                        <div class="table-responsive">
+                        <table class="table table-hover datatable-button-html5-columns">
                             <thead>
                             <tr>
                                 <th>S/N</th>
@@ -96,14 +107,14 @@
                                                     <i class="icon-menu9"></i>
                                                 </a>
 
-                                                <div class="dropdown-menu dropdown-menu-left">
+                                                <div class="dropdown-menu dropdown-menu-right">
                                                     {{--edit--}}
                                                     @if(Qs::userIsTeamSA())
                                                         <a href="{{ route('sections.edit', $s->id) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
                                                     @endif
                                                     {{--Delete--}}
                                                     @if(Qs::userIsSuperAdmin())
-                                                        <a id="{{ $s->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                        <a id="{{ $s->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item text-danger"><i class="icon-trash"></i> Delete</a>
                                                         <form method="post" id="item-delete-{{ $s->id }}" action="{{ route('sections.destroy', $s->id) }}" class="hidden">@csrf @method('delete')</form>
                                                     @endif
 
@@ -115,6 +126,8 @@
                             @endforeach
                             </tbody>
                         </table>
+                        </div>
+                        @endif
                     </div>
                 @endforeach
 

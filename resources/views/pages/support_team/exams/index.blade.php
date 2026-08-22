@@ -4,7 +4,9 @@
 
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h6 class="card-title">Manage Exams</h6>
+            <h6 class="card-title"><i class="icon-file-text2 mr-2 text-primary"></i> Manage Exams
+                <span class="stat-chip ml-2"><i class="icon-file-text2"></i>{{ $exams->count() }} exams</span>
+            </h6>
             {!! Qs::getPanelOptions() !!}
         </div>
 
@@ -16,7 +18,15 @@
 
             <div class="tab-content">
                     <div class="tab-pane fade show active" id="all-exams">
-                        <table class="table datatable-button-html5-columns">
+                        @if($exams->isEmpty())
+                            <div class="empty-state my-4">
+                                <i class="icon-file-text2"></i>
+                                <div class="empty-title">No exams created yet</div>
+                                <span class="text-muted">Add an exam (e.g. “Mid-Term One”) to start recording marks.</span>
+                            </div>
+                        @else
+                        <div class="table-responsive">
+                        <table class="table table-hover datatable-button-html5-columns">
                             <thead>
                             <tr>
                                 <th>S/N</th>
@@ -40,14 +50,14 @@
                                                 <i class="icon-menu9"></i>
                                                 </a>
 
-                                                <div class="dropdown-menu dropdown-menu-left">
+                                                <div class="dropdown-menu dropdown-menu-right">
                                                     @if(Qs::userIsTeamSA())
                                                     {{--Edit--}}
                                                     <a href="{{ route('exams.edit', $ex->id) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
                                                    @endif
                                                     @if(Qs::userIsSuperAdmin())
                                                     {{--Delete--}}
-                                                    <a id="{{ $ex->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
+                                                    <a id="{{ $ex->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item text-danger"><i class="icon-trash"></i> Delete</a>
                                                     <form method="post" id="item-delete-{{ $ex->id }}" action="{{ route('exams.destroy', $ex->id) }}" class="hidden">@csrf @method('delete')</form>
                                                         @endif
 
@@ -59,6 +69,8 @@
                             @endforeach
                             </tbody>
                         </table>
+                        </div>
+                        @endif
                     </div>
 
                 <div class="tab-pane fade" id="new-exam">
