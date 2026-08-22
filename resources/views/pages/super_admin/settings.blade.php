@@ -51,8 +51,30 @@
     .st-disabled { background: #efebe9; color: #6d4c41; }
     .st-disabled .dot { background: #8d6e63; }
     .st-required { background: #e3f2fd; color: #1565c0; }
-    .switch-sm .custom-control-label::before { width: 2rem; height: 1.1rem; }
-    .switch-sm .custom-control-label::after { width: calc(1.1rem - 4px); height: calc(1.1rem - 4px); }
+
+    /* ---- Module on/off switch ---- */
+    .mod-switch {
+        position: relative; display: inline-block; width: 42px; height: 23px;
+        flex: 0 0 auto; margin-left: .5rem;
+    }
+    .mod-switch input {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0; margin: 0; cursor: pointer; z-index: 2;
+    }
+    .mod-slider {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: #b9c4ce; border-radius: 999px; pointer-events: none;
+        transition: background .18s ease;
+    }
+    .mod-slider::before {
+        content: ""; position: absolute; width: 17px; height: 17px; left: 3px; top: 3px;
+        border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+        transition: transform .18s ease;
+    }
+    .mod-switch input:checked + .mod-slider { background: #43a047; }
+    .mod-switch input:checked + .mod-slider::before { transform: translateX(19px); }
+    .mod-switch:hover .mod-slider { box-shadow: 0 0 0 3px rgba(30,136,229,.12); }
+    .mod-switch input:focus-visible + .mod-slider { box-shadow: 0 0 0 3px rgba(30,136,229,.28); }
     .dep-note { font-size: .72rem; color: #9aa7b8; }
     .dep-note b { color: #7b879b; font-weight: 600; }
 
@@ -292,12 +314,13 @@
                                                 </span>
 
                                                 @if(!$required)
-                                                    <div class="custom-control custom-switch switch-sm ml-2">
-                                                        <input type="checkbox" class="custom-control-input module-toggle"
+                                                    <label class="mod-switch"
+                                                           title="{{ $enabled ? 'Click to disable '.addslashes($m['name']) : 'Click to enable '.addslashes($m['name']) }}">
+                                                        <input type="checkbox" class="module-toggle"
                                                                id="mod-{{ $slug }}" data-slug="{{ $slug }}" data-name="{{ $m['name'] }}"
                                                                {{ $enabled ? 'checked' : '' }}>
-                                                        <label class="custom-control-label" for="mod-{{ $slug }}"></label>
-                                                    </div>
+                                                        <span class="mod-slider"></span>
+                                                    </label>
                                                 @endif
                                             </div>
                                         </div>
