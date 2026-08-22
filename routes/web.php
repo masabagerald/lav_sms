@@ -161,12 +161,32 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('dorms', 'DormController');
         Route::resource('payments', 'PaymentController');
 
-        Route::get('/reports/payments', 'ReportController@index')
-    ->name('reports.payments');
+        /**************** REPORTS ****************/
+        // Finance reports: bursar / accountant / admins
+        Route::group(['prefix' => 'reports', 'middleware' => 'teamAccount'], function () {
+            Route::get('/', 'ReportController@index')->name('reports.index');
+            Route::get('payments', 'ReportController@payments')->name('reports.payments');
+            Route::get('debtors', 'ReportController@debtors')->name('reports.debtors');
+            Route::get('daily-collections', 'ReportController@daily')->name('reports.daily');
 
-     Route::get('/reports/student/payments', 'ReportController@paymentReport')->name('students.payments');
+            // Legacy alias kept working
+            Route::get('payments/legacy', 'ReportController@index')->name('reports.payments_legacy');
+        });
 
-        Route::resource('reports', 'ReportController');
+        // Student & academic reports: academic staff
+        Route::group(['prefix' => 'reports/students', 'middleware' => 'teamSAT'], function () {
+            Route::get('fee-status/csv', 'ReportController@feeStatus')->name('reports.fee_status.csv');
+            Route::get('fee-status', 'ReportController@feeStatus')->name('reports.fee_status');
+            Route::get('register', 'ReportController@register')->name('reports.students.register');
+            Route::get('demographics', 'ReportController@demographics')->name('reports.demographics');
+            Route::get('enrollment', 'ReportController@enrollment')->name('reports.enrollment');
+        });
+
+        Route::get('reports/academic', 'ReportController@academic')
+            ->middleware('teamSAT')->name('reports.academic');
+
+     Route::get('/reports/student/payments', 'ReportController@feeStatus')->name('students.payments');
+
 
     
 
